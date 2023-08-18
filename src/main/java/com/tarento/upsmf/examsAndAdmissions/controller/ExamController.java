@@ -1,24 +1,28 @@
 package com.tarento.upsmf.examsAndAdmissions.controller;
 
-import com.tarento.upsmf.examsAndAdmissions.model.Enrollment;
+import com.tarento.upsmf.examsAndAdmissions.model.ApiResponse;
 import com.tarento.upsmf.examsAndAdmissions.service.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 @RestController
-@RequestMapping("/exam")
+@RequestMapping("/v1/exam/admin/examcycle")
 public class ExamController {
 
     @Autowired
     EnrollmentService enrollmentService;
 
-    @GetMapping("admin/examCycle/institute")
-    public List<Enrollment> getInstitute(){
-        return enrollmentService.getInstitute();
+    @GetMapping("/institute")
+    public ResponseEntity<?> getInstitute(){
+        ApiResponse response =  enrollmentService.getInstitute();
+        return new ResponseEntity<>(response, response.getResponseCode());
     }
-    @GetMapping("admin/examCycle/institute/{enrollmentid}")
-    public List<Enrollment> getInstitute(@RequestParam Integer enrollmentid){
-        return enrollmentService.getInstitute(enrollmentid);
+    @GetMapping("/institute/{enrollmentid}")
+    public ResponseEntity<?> getInstitute(@RequestParam Integer enrollmentid){
+        ApiResponse response =  enrollmentService.getInstitute(enrollmentid);
+        return new ResponseEntity<>(response, response.getResponseCode());
     }
 }

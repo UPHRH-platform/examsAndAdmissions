@@ -1,13 +1,11 @@
 package com.tarento.upsmf.examsAndAdmissions.service;
 
-import com.tarento.upsmf.examsAndAdmissions.model.Enrollment;
+import com.tarento.upsmf.examsAndAdmissions.model.ApiResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-
+@Service
 public interface EnrollmentService {
-    public List<Enrollment> getInstitute();
+    public ApiResponse getInstitute();
 
-    public List<Enrollment> getInstitute(Integer enrollmentId);
+    public ApiResponse getInstitute(Integer enrollmentId);
 }
