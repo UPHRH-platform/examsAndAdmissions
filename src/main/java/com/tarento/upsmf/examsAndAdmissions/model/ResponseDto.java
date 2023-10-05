@@ -122,13 +122,13 @@ public class ResponseDto {
     public boolean containsKey(String key) {
         return response.containsKey(key);
     }*/
-    /*public Map<String, Object> getData() { // Renamed from getResult to getData
+    public Map<String, Object> getData() { // Renamed from getResult to getData
         return data;
     }
 
     public void setData(Map<String, Object> data) { // Renamed from setResult to setData
         this.data = data;
-    }*/
+    }
 
     public Object get(String key) {
         return response.get(key);
