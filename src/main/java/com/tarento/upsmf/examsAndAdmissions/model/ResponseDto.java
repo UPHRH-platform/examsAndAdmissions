@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -58,6 +59,7 @@ public class ResponseDto {
     public void setResponseCodeNumeric(int responseCodeNumeric) {
         this.responseCodeNumeric = responseCodeNumeric;
     }
+    @JsonIgnore
     private transient Map<String, Object> response = new HashMap<>();
 
     public ResponseDto() {

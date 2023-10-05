@@ -139,8 +139,8 @@ public class HallTicketService {
         if (request != null) {
             request.setStatus("APPROVED");
             dataCorrectionRequestRepository.save(request);
-            response.put(Constants.MESSAGE, Constants.SUCCESSMESSAGE);
-            response.put(Constants.RESPONSE, request);
+            response.getResult().put(Constants.MESSAGE, Constants.SUCCESSMESSAGE);
+            response.getResult().put(Constants.RESPONSE, request);
             response.setResponseCode(HttpStatus.OK);
         } else {
             setErrorResponse(response, "REQUEST_NOT_FOUND", "Request not found.", HttpStatus.NOT_FOUND);
