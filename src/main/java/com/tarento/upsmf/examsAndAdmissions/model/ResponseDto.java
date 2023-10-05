@@ -122,28 +122,28 @@ public class ResponseDto {
     public boolean containsKey(String key) {
         return response.containsKey(key);
     }*/
-    public Map<String, Object> getData() { // Renamed from getResult to getData
+    /*public Map<String, Object> getData() { // Renamed from getResult to getData
         return data;
     }
 
     public void setData(Map<String, Object> data) { // Renamed from setResult to setData
         this.data = data;
-    }
+    }*/
 
     public Object get(String key) {
-        return data.get(key);
+        return response.get(key);
     }
 
     public void put(String key, Object vo) {
-        data.put(key, vo);
+        response.put(key, vo);
     }
 
     public void putAll(Map<String, Object> map) {
-        data.putAll(map);
+        response.putAll(map);
     }
 
     public boolean containsKey(String key) {
-        return data.containsKey(key);
+        return response.containsKey(key);
     }
 
     public ErrorDetails getError() {
