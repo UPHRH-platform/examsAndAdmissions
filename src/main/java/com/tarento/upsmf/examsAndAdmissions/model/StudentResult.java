@@ -25,10 +25,6 @@ public class StudentResult {
     @JoinColumn(name = "student_id")
     private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "institute_id")
-    private Institute institute;
-
     @JsonProperty("First Name")
     private String firstName;
     @JsonProperty("Last Name")
@@ -101,7 +97,7 @@ public class StudentResult {
     private boolean finalMarkFlag;
     private boolean revisedFinalMarkFlag;
     private LocalDate lastDateToUploadInternalMarks;
-//    private long instituteId;
+    private long instituteId;
 
     public StudentResult(Student student, String firstName, String lastName, String enrollmentNumber, Institute institute,
                            String motherName, String fatherName, Course course, String course_name,
@@ -111,7 +107,7 @@ public class StudentResult {
                            Integer otherMarks, Integer passingOtherMarks, Integer otherMarksObtained,
                            Integer externalMarks, Integer passingExternalMarks, Integer externalMarksObtained,
                            Integer totalMarks, Integer passingTotalMarks, Integer totalMarksObtained,
-                           String grade, String result, ResultStatus status, boolean published, boolean internalMarkFlag, boolean finalMarkFlag, boolean revisedFinalMarkFlag,LocalDate lastDateToUploadInternalMarks) {
+                           String grade, String result, ResultStatus status, boolean published, boolean internalMarkFlag, boolean finalMarkFlag, boolean revisedFinalMarkFlag,LocalDate lastDateToUploadInternalMarks, long instituteId) {
 
         this.student = student;
         this.firstName = firstName;
@@ -121,7 +117,6 @@ public class StudentResult {
         this.fatherName = fatherName;
         this.course = course;
         this.course_name = course_name;
-        this.institute = institute;
         this.examCycle = examCycle;
         this.examCycle_name = examCycle_name;
         this.exam = exam;
@@ -149,5 +144,6 @@ public class StudentResult {
         this.finalMarkFlag = finalMarkFlag;
         this.revisedFinalMarkFlag = revisedFinalMarkFlag;
         this.lastDateToUploadInternalMarks=lastDateToUploadInternalMarks;
+        this.instituteId=instituteId;
     }
 }

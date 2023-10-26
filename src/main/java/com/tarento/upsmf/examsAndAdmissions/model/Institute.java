@@ -37,8 +37,6 @@ public class Institute implements Serializable {
     @OneToMany(mappedBy = "institute")
     @JsonBackReference // To prevent infinite recursion
     private List<StudentExamRegistration> registrations;
-    @OneToMany(mappedBy = "institute")
-    private List<StudentResult> studentResults;
     private Boolean cctvVerified;
     private String ipAddress;
     private String remarks;

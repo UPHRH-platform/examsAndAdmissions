@@ -702,7 +702,6 @@ public class DataImporterService {
 
     private StudentResult getStudentResult(StudentResult dto, Long instituteId) {
         StudentResult entity = new StudentResult();
-        Institute institute = instituteRepository.findById(instituteId).orElse(null);
 
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
@@ -723,7 +722,7 @@ public class DataImporterService {
         entity.setOtherMarksObtained(dto.getOtherMarksObtained());
         entity.setGrade(dto.getGrade());
         entity.setResult(dto.getResult());
-        entity.setInstitute(institute);
+        entity.setInstituteId(instituteId);
         return entity;
     }
 
