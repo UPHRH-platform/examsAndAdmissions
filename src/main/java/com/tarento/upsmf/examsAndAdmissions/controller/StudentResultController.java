@@ -88,10 +88,9 @@ public class StudentResultController {
     @GetMapping("/resultsByInstitute")
     public ResponseEntity<ResponseDto> getStudentsExamDetails(
             @RequestParam Long instituteId,
-            @RequestParam Long examCycleId,
-            @RequestParam(required = false) Long examId) {
+            @RequestParam Long examCycleId) {
 
-        ResponseDto response = studentResultService.getResultsByInstituteAndExamCycle(instituteId, examCycleId, examId);
+        ResponseDto response = studentResultService.getResultsByInstituteAndExamCycle(instituteId, examCycleId);
         return new ResponseEntity<>(response, response.getResponseCode());
 
     }
