@@ -8,23 +8,23 @@ import java.util.Date;
 public class DataValidation {
 
     public static boolean isFirstNameValid(String firstName) {
-        return firstName != null && firstName.matches("^[a-zA-Z]+$");
+        return firstName != null && firstName.matches("^[a-zA-Z ]+$");
     }
 
     public static boolean isLastNameValid(String lastName) {
-        return lastName != null && lastName.matches("^[a-zA-Z]+$");
+        return lastName != null && lastName.matches("^[a-zA-Z ]+$");
     }
 
     public static boolean isEnrollmentNumberValid(String enrollmentNumber) {
-        return enrollmentNumber != null && enrollmentNumber.matches("^[a-zA-Z0-9 ]+$");
+        return enrollmentNumber != null && enrollmentNumber.matches("^[a-zA-Z0-9]+$");
     }
 
     public static boolean isMotherNameValid(String motherName) {
-        return motherName != null && motherName.matches("^[a-zA-Z]+$");
+        return motherName != null && motherName.matches("^[a-zA-Z ]+$");
     }
 
     public static boolean isFatherNameValid(String fatherName) {
-        return fatherName != null && fatherName.matches("^[a-zA-Z]+$");
+        return fatherName != null && fatherName.matches("^[a-zA-Z ]+$");
     }
 
     public static boolean isCourseNameValid(String courseName) {
