@@ -788,7 +788,7 @@ public class StudentResultService {
         try {
             // Fetch all exams for the exam cycle
             List<Exam> exams = examRepository.findByExamCycleId(examCycleId);
-
+            String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
             List<ExamDetailsDto> dtos = exams.stream().map(exam -> {
                 ExamDetailsDto dto = new ExamDetailsDto();
                 dto.setExamId(exam.getId());
@@ -798,7 +798,7 @@ public class StudentResultService {
                 dto.setLastDateToUploadInternalMarks(exam.getLastDateToUploadMarks());
 
                 // Now check for student results for this exam and institute
-                List<StudentResult> resultsForExam = studentResultRepository.findByExamCycleNameAndInstituteId(exam.getExamName(), instituteId);
+                List<StudentResult> resultsForExam = studentResultRepository.findByExamCycleNameAndInstituteId(examCycleName, instituteId);
 
                 if (!resultsForExam.isEmpty()) {
                     // If we find any student result records, it means internal marks have been uploaded
