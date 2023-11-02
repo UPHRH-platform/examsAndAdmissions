@@ -21,8 +21,6 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
 
     List<StudentResult> findByCourse_IdAndExam_ExamCycleIdAndPublished(Long courseId, Long examCycleId, boolean b);
 
-//    List<StudentResult> findByStudent_EnrollmentNumberAndStudent_DateOfBirthAndExamCycle_IdAndPublished(String enrollmentNumber, LocalDate dateOfBirth, Long examCycleId, boolean published);
-
     boolean existsByEnrollmentNumberAndFirstNameAndLastName(String enrollmentNumber,String firstName, String lastName);
 
     List<StudentResult> findByExamCycleAndExam(Long examCycle, Exam exam);
@@ -69,5 +67,8 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
 
     @Query("SELECT sr FROM StudentResult sr WHERE sr.enrollmentNumber = :enrollmentNumber AND sr.examCycle_name = :examCycleName AND sr.published = :b ")
     List<StudentResult> findByStudent_EnrollmentNumberAndExamCycleNameAndPublished(String enrollmentNumber, String examCycleName, boolean b);
+
+    @Query("SELECT sr FROM StudentResult sr WHERE sr.examCycle_name = :examCycle_name AND sr.instituteId = :instituteId")
+    List<StudentResult> findByExamCycleNameAndInstituteId(@Param("examCycle_name") String examCycleName, @Param("instituteId") Long instituteId);
 }
 

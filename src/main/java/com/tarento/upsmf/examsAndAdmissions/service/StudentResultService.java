@@ -441,11 +441,11 @@ public class StudentResultService {
         dto.setLastName(firstResult.getLastName());
 //        dto.setEnrollmentNumber(firstResult.getStudent().getEnrollmentNumber());
         dto.setEnrollmentNumber(firstResult.getEnrollmentNumber());
+        Student student = studentRepository.findByEnrollmentNumber(firstResult.getEnrollmentNumber()).orElseThrow();
 //        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
-//        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
-
-        if (firstResult.getExamCycle() != null) {
-            ExamCycle examCycle = firstResult.getExamCycle();
+        dto.setDateOfBirth(student.getDateOfBirth());
+        if (firstResult.getExamCycle_name() != null) {
+            ExamCycle examCycle = examCycleRepository.findByExamCycleName(firstResult.getExamCycle_name());
             if (examCycle.getCourse() != null) {
                 dto.setCourseYear(examCycle.getCourse().getCourseYear());
                 dto.setCourseName(examCycle.getCourse().getCourseName());
@@ -455,7 +455,7 @@ public class StudentResultService {
         List<ExamDetailsDTO> examsList = studentResultList.stream()
                 .map(studentResult -> {
                     ExamDetailsDTO examDto = new ExamDetailsDTO();
-                    examDto.setExamName(studentResult.getExam().getExamName());
+                    examDto.setExamName(studentResult.getExam_name());
                     examDto.setInternalMarks(studentResult.getInternalMarks());
                     examDto.setExternalMarks(studentResult.getExternalMarks());
                     examDto.setTotalMarks(studentResult.getTotalMarks());
@@ -798,7 +798,7 @@ public class StudentResultService {
                 dto.setLastDateToUploadInternalMarks(exam.getLastDateToUploadMarks());
 
                 // Now check for student results for this exam and institute
-                List<StudentResult> resultsForExam = studentResultRepository.findByExamNameAndInstituteId(exam.getExamName(), instituteId);
+                List<StudentResult> resultsForExam = studentResultRepository.findByExamCycleNameAndInstituteId(exam.getExamName(), instituteId);
 
                 if (!resultsForExam.isEmpty()) {
                     // If we find any student result records, it means internal marks have been uploaded
