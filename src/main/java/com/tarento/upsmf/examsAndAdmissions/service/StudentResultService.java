@@ -408,7 +408,10 @@ public class StudentResultService {
 
     public ResponseDto findByEnrollmentNumberAndDateOfBirth(String enrollmentNumber, Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_FIND_BY_ENROLLMENT_NUMBER_AND_DOB);
-        List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycle_IdAndPublished(enrollmentNumber, examCycleId, true);
+//        List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycle_IdAndPublished(enrollmentNumber, examCycleId, true);
+
+        String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
+        List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycleNameAndPublished(enrollmentNumber, examCycleName, true);
 
         if (!studentResultList.isEmpty()) {
             StudentResultDTO studentResultDTO = mapToDTO(studentResultList);
@@ -432,10 +435,14 @@ public class StudentResultService {
 
         // Set common details using the first entry.
         StudentResult firstResult = studentResultList.get(0);
-        dto.setFirstName(firstResult.getStudent().getFirstName());
-        dto.setLastName(firstResult.getStudent().getSurname());
-        dto.setEnrollmentNumber(firstResult.getStudent().getEnrollmentNumber());
-        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
+//        dto.setFirstName(firstResult.getStudent().getFirstName());
+        dto.setFirstName(firstResult.getFirstName());
+//        dto.setLastName(firstResult.getStudent().getSurname());
+        dto.setLastName(firstResult.getLastName());
+//        dto.setEnrollmentNumber(firstResult.getStudent().getEnrollmentNumber());
+        dto.setEnrollmentNumber(firstResult.getEnrollmentNumber());
+//        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
+//        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
 
         if (firstResult.getExamCycle() != null) {
             ExamCycle examCycle = firstResult.getExamCycle();
@@ -666,17 +673,19 @@ public class StudentResultService {
     }
 
 
-    public ResponseDto getResultsByInstituteAndExamCycle(Long instituteId, Long examCycleId, Long examId) {
+    public ResponseDto getResultsByInstituteAndExamCycle(Long instituteId, Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_RESULTS_GET_BY_INSTITUTE_AND_CYCLE);
-        List<StudentResult> results = studentResultRepository.findByStudent_Institute_IdAndExamCycle_IdAndExam_id(instituteId, examCycleId, examId);
-
+        String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
+//        List<StudentResult> results = studentResultRepository.findByInstituteIdAndExamCycleId(instituteId, examCycleId);
+        List<StudentResult> results = studentResultRepository.findByInstituteIdAndExamCycleName(instituteId, examCycleName);
+        Institute institute = instituteRepository.findById(instituteId).orElseThrow();
         if (!results.isEmpty()) {
             List<ResultDisplayDto> dtos = results.stream()
                     .map(result -> {
                         ResultDisplayDto dto = new ResultDisplayDto();
                         dto.setId(result.getId());
-                        dto.setInstituteName(result.getStudent().getInstitute().getInstituteName());
-                        dto.setInstitute_id(result.getStudent().getInstitute().getId());
+                        dto.setInstituteName(institute.getInstituteName());
+                        dto.setInstitute_id(result.getInstituteId());
                         dto.setFirstName(result.getFirstName());
                         dto.setLastName(result.getLastName());
                         dto.setEnrollmentNumber(result.getEnrollmentNumber());
