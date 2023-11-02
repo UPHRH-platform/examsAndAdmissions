@@ -734,10 +734,9 @@ public class StudentResultService {
                 dto.setCourse(result.getCourse_name());
                 return dto;
             });
-            instituteResult.setHasFinalMarks(result.isInternalMarkFlag());
+            instituteResult.setHasInternalMarks(result.isInternalMarkFlag());
             instituteResult.setHasFinalMarks(result.isFinalMarkFlag());
             instituteResult.setHasRevisedFinalMarks(result.isRevisedFinalMarkFlag());
-
         }
         return processedResults;
     }
@@ -746,7 +745,7 @@ public class StudentResultService {
         ResponseDto response = new ResponseDto(Constants.API_SINGLE_EXAM_MARK);
         String examCycleName = examCycleRepository.getExamCycleNameById(examCycle);
         String examName = examRepository.getExamNameById(exam);
-        List<StudentResult> studentResults = studentResultRepository.findByExamCycleNameAndExamNameAndInstitute(examCycleName, examCycleName, institute);
+        List<StudentResult> studentResults = studentResultRepository.findByExamCycleNameAndExamNameAndInstitute(examCycleName, examName, institute);
 
         // If no results found, return a not found response.
         if(studentResults.isEmpty()) {
@@ -766,12 +765,12 @@ public class StudentResultService {
 
     private StudentResultDto convertToDto(StudentResult result) {
         StudentResultDto dto = new StudentResultDto();
-        dto.setFirstName(result.getStudent().getFirstName());
-        dto.setLastName(result.getStudent().getSurname());
-        dto.setCourseName(result.getCourse().getCourseName());
-        dto.setExam(result.getExam().getExamName());
+        dto.setFirstName(result.getFirstName());
+        dto.setLastName(result.getLastName());
+        dto.setCourseName(result.getCourse_name());
+        dto.setExam(result.getExam_name());
         dto.setInternalMark(result.getInternalMarksObtained());
-        dto.setLastName(result.getEnrollmentNumber());
+        dto.setEnrollmentNumber(result.getEnrollmentNumber());
         return dto;
     }
     public ResponseDto getExamsForExamCycleAndUploadStatusForInstitute(Long examCycleId, Long instituteId) {
