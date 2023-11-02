@@ -75,6 +75,7 @@ public class ExamCenterService {
 
             // Set the alternate exam center for the unverified exam center
             unverifiedExamCenter.setAlternateExamCenter(alternateExamCenter);
+            unverifiedExamCenter.setAlternateExamCenterAssigned(true);
             examCenterRepository.save(unverifiedExamCenter);
 
             // Save the updated registrations
