@@ -426,7 +426,8 @@ public class HallTicketService {
                 response.put(Constants.RESPONSE, responseDto);
                 response.setResponseCode(HttpStatus.OK);
             } else {
-                setErrorResponse(response, "REQUEST_NOT_FOUND", "Request not found.", HttpStatus.NOT_FOUND);
+                String errorMessage = String.format("Data correction request with ID %d could not be found. Please check if the ID is correct and try again.", requestId);
+                setErrorResponse(response, "REQUEST_NOT_FOUND", errorMessage, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             setErrorResponse(response, "APPROVAL_ERROR", "Error during approval process: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
