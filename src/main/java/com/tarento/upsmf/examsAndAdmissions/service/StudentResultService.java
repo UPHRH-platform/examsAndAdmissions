@@ -697,7 +697,17 @@ public class StudentResultService {
                         dto.setInternalMarks(result.getInternalMarks());
                         dto.setPassingInternalMarks(result.getPassingInternalMarks());
                         dto.setInternalMarksObtained(result.getInternalMarksObtained());
-                        //... similarly, map other fields
+                        dto.setPracticalMarks(result.getPracticalMarks());
+                        dto.setPassingPracticalMarks(result.getPassingPracticalMarks());
+                        dto.setPracticalMarksObtained(result.getPracticalMarksObtained());
+                        dto.setExternalMarks(result.getExternalMarks());
+                        dto.setPassingExternalMarks(result.getPassingExternalMarks());
+                        dto.setExternalMarksObtained(result.getExternalMarksObtained());
+                        dto.setTotalMarks(result.getTotalMarks());
+                        dto.setPassingTotalMarks(result.getPassingTotalMarks());
+                        dto.setTotalMarksObtained(result.getTotalMarksObtained());
+                        dto.setGrade(result.getGrade());
+                        dto.setResult(result.getResult());
                         return dto;
                     })
                     .collect(Collectors.toList());
