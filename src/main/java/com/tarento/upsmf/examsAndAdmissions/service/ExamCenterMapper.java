@@ -22,6 +22,7 @@ public class ExamCenterMapper {
         dto.setDistrict(examCenter.getDistrict());
         dto.setInstituteCode(examCenter.getInstituteCode());
         dto.setAllowedForExamCentre(examCenter.isAllowedForExamCentre());
+        dto.setAlternateExamCenterAssigned(examCenter.getAlternateExamCenterAssigned());
         return dto;
     }
 
