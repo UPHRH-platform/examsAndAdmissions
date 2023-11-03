@@ -13,4 +13,5 @@ public class ExamDetailsDTO {
     private String grade;
     private String result;
     private String status;
+    private Long examId;
 }
