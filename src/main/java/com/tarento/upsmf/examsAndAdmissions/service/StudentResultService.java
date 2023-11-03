@@ -406,11 +406,12 @@ public class StudentResultService {
         return response;
     }
 
-    public ResponseDto findByEnrollmentNumberAndDateOfBirth(String enrollmentNumber, Long examCycleId) {
+    public ResponseDto findByStudentIdAndExamCycleId(Long studentId, Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_FIND_BY_ENROLLMENT_NUMBER_AND_DOB);
 //        List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycle_IdAndPublished(enrollmentNumber, examCycleId, true);
 
         String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
+        String enrollmentNumber = studentRepository.getEnrollmentNumberById(studentId);
         List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycleNameAndPublished(enrollmentNumber, examCycleName, true);
 
         if (!studentResultList.isEmpty()) {
@@ -420,7 +421,7 @@ public class StudentResultService {
             response.put(Constants.RESPONSE, studentResultDTO);
             response.setResponseCode(HttpStatus.OK);
         } else {
-            ResponseDto.setErrorResponse(response, "RESULT_NOT_FOUND", "No result found for the given enrollment number and date of birth.", HttpStatus.NOT_FOUND);
+            ResponseDto.setErrorResponse(response, "RESULT_NOT_FOUND", "No result found for the given enrollment number and examCycle.", HttpStatus.NOT_FOUND);
         }
 
         return response;
