@@ -32,9 +32,9 @@ public class QuestionPaperController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseDto> upload(Long examCycleId, @RequestAttribute(Constants.Parameters.USER_ID) String createdBy, MultipartFile file) {
+    public ResponseEntity<ResponseDto> upload(Long examCycleId, Long examId, @RequestAttribute(Constants.Parameters.USER_ID) String createdBy, MultipartFile file) {
         try {
-            ResponseDto response = attachmentService.upload(examCycleId, createdBy, file);
+            ResponseDto response = attachmentService.upload(examCycleId, examId, createdBy, file);
             return new ResponseEntity<>(response, response.getResponseCode());
         } catch (Exception e) {
             return HandleResponse.handleErrorResponse(e);

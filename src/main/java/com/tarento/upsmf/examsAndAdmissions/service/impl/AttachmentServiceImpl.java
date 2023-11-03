@@ -179,7 +179,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public ResponseDto upload(Long examCycleId, String createdBy, MultipartFile file) {
+    public ResponseDto upload(Long examCycleId, Long examId, String createdBy, MultipartFile file) {
         ResponseDto response = new ResponseDto(Constants.API_QUESTION_PAPER_UPLOAD);
         Path filePath = null;
         try {
@@ -200,7 +200,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             storage.create(blobInfo, new FileInputStream(filePath.toFile()));
 
             //Get Details from other table
-            Exam examDetails = examRepository.findByExamCycleIdAndObsolete(examCycleId, 0).orElse(null);
+            Exam examDetails = examRepository.findByIdAndObsolete(examId, 0).orElse(null);
             LocalDate examDate = null;
             String examName = null;
             LocalTime examStartTime = null;
