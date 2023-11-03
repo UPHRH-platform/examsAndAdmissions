@@ -13,5 +13,5 @@ public interface AttachmentService {
 
     ResponseDto deleteQuestionPaper(Long id);
 
-    ResponseDto upload(Long examCycleId, String createdBy, MultipartFile file);
+    ResponseDto upload(Long examCycleId, Long examId, String createdBy, MultipartFile file);
 }
