@@ -28,7 +28,7 @@ public class StudentController {
     public ResponseEntity<ResponseDto> addStudent(@ModelAttribute @Valid StudentDto studentDto) {
         ResponseDto response = studentService.enrollStudent(studentDto);
         if (HttpStatus.OK.equals(response.getResponseCode())) {
-            return ResponseEntity.ok(response);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             return ResponseEntity.status(response.getResponseCode()).body(response);
         }
@@ -41,48 +41,50 @@ public class StudentController {
             @RequestParam(required = false) VerificationStatus verificationStatus) {
 
         ResponseDto response = studentService.getFilteredStudents(instituteId, courseId, session, verificationStatus);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+//        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> getStudentById(@PathVariable Long id) {
         ResponseDto response = studentService.getStudentById(id);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto> updateStudent(@PathVariable Long id, @ModelAttribute @Valid StudentDto studentDto) {
         ResponseDto response = studentService.updateStudent(id, studentDto);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PutMapping("/closePendingFor14Days")
     public ResponseEntity<ResponseDto> updateStudentStatusToClosed() {
         ResponseDto response = studentService.updateStudentStatusToClosed();
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+//        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/pendingFor21Days")
     public ResponseEntity<ResponseDto> getStudentsPendingFor21Days(@RequestParam(required = false) Long courseId,
                                                                    @RequestParam(required = false) String session) {
         ResponseDto response = studentService.getStudentsPendingForMoreThan21Days(courseId, session);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, response.getResponseCode());
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto> deleteStudent(@PathVariable Long id) {
         ResponseDto response = studentService.deleteStudent(id);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PutMapping("/{studentId}/verify")
     public ResponseEntity<ResponseDto> verifyStudent(@PathVariable Long studentId, @RequestParam("status") VerificationStatus status, @RequestParam("remarks") String remarks, @RequestAttribute(Constants.Parameters.USER_ID) String userId) {
         ResponseDto response = studentService.verifyStudent(studentId, status, remarks, userId);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/pendingVerification")
     public ResponseEntity<ResponseDto> getStudentsPendingVerification() {
         ResponseDto response = studentService.findByVerificationStatus(VerificationStatus.PENDING);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/keycloak/{keycloakId}")
     public ResponseEntity<ResponseDto> getStudentByKeycloak(@PathVariable String keycloakId) {
         ResponseDto response = studentService.getStudentByKeycloakId(keycloakId);
-        return ResponseEntity.status(response.getResponseCode()).body(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

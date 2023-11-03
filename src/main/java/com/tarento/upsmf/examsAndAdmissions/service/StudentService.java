@@ -367,16 +367,15 @@ public class StudentService {
             List<Student> students = entityManager.createQuery(criteriaQuery).getResultList();
 
             if (students.isEmpty()) {
-                response.put(Constants.MESSAGE, "No students found with the given criteria.");
+//                response.put(Constants.MESSAGE, "No students found with the given criteria.");
+                 return ResponseDto.setErrorResponse(response, "NO_PENDING_STUDENTS", "No students found with the given criteria.", HttpStatus.NOT_FOUND);
             } else {
                 response.put(Constants.MESSAGE, "Students fetched successfully.");
                 response.put(Constants.RESPONSE, students);
+                response.setResponseCode(HttpStatus.OK);
             }
-            response.setResponseCode(HttpStatus.OK);
-
-
         } catch (Exception e) {
-            ResponseDto.setErrorResponse(response, "GENERAL_ERROR", "An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseDto.setErrorResponse(response, "GENERAL_ERROR", "An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return response;
