@@ -37,7 +37,7 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
     Optional<StudentResult> findByExamIdAndStudentId(Long examId, Long studentId);
     @Modifying
     @Transactional
-    @Query("UPDATE StudentResult sr SET sr.externalMarks = null, sr.passingExternalMarks = null, sr.externalMarksObtained = null, sr.finalMarkFlag = false WHERE sr.examCycle_name = :examCycleName AND sr.instituteId = :instituteId")
+    @Query("UPDATE StudentResult sr SET sr.externalMarks = null, sr.passingExternalMarks = null, sr.externalMarksObtained = null, sr.finalMarkFlag = false, sr.published = false WHERE sr.examCycle_name = :examCycleName AND sr.instituteId = :instituteId")
     int setExternalMarksToNull(@Param("examCycleName") String examCycleName, @Param("instituteId") Long instituteId);
     @Query("SELECT sr FROM StudentResult sr WHERE sr.firstName = :firstName AND sr.lastName = :lastName AND sr.enrollmentNumber = :enrollmentNumber")
     StudentResult findByFirstNameAndLastNameAndEnrollmentNumber(
