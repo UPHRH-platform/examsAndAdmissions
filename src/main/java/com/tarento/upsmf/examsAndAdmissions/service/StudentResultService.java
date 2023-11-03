@@ -421,7 +421,7 @@ public class StudentResultService {
             response.put(Constants.RESPONSE, studentResultDTO);
             response.setResponseCode(HttpStatus.OK);
         } else {
-            ResponseDto.setErrorResponse(response, "RESULT_NOT_FOUND", "No result found for the given enrollment number and examCycle.", HttpStatus.NOT_FOUND);
+            ResponseDto.setErrorResponse(response, "RESULT_NOT_FOUND", "No result found for the given studentId and examCycle.", HttpStatus.NOT_FOUND);
         }
 
         return response;
@@ -457,9 +457,9 @@ public class StudentResultService {
                 .map(studentResult -> {
                     ExamDetailsDTO examDto = new ExamDetailsDTO();
                     examDto.setExamName(studentResult.getExam_name());
-                    examDto.setInternalMarks(studentResult.getInternalMarks());
-                    examDto.setExternalMarks(studentResult.getExternalMarks());
-                    examDto.setTotalMarks(studentResult.getTotalMarks());
+                    examDto.setInternalMarks(studentResult.getInternalMarksObtained());
+                    examDto.setExternalMarks(studentResult.getExternalMarksObtained());
+                    examDto.setTotalMarks(studentResult.getTotalMarksObtained());
                     examDto.setGrade(studentResult.getGrade());
                     examDto.setResult(studentResult.getResult());
                     examDto.setStatus(studentResult.getStatus().name());
