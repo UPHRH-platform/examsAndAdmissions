@@ -407,7 +407,7 @@ public class StudentResultService {
     }
 
     public ResponseDto findByStudentIdAndExamCycleId(Long studentId, Long examCycleId) {
-        ResponseDto response = new ResponseDto(Constants.API_FIND_BY_ENROLLMENT_NUMBER_AND_DOB);
+        ResponseDto response = new ResponseDto(Constants.API_FIND_BY_ENROLLMENT_NUMBER_AND_ExamCycle);
 //        List<StudentResult> studentResultList = studentResultRepository.findByStudent_EnrollmentNumberAndExamCycle_IdAndPublished(enrollmentNumber, examCycleId, true);
 
         String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
@@ -463,6 +463,9 @@ public class StudentResultService {
                     examDto.setGrade(studentResult.getGrade());
                     examDto.setResult(studentResult.getResult());
                     examDto.setStatus(studentResult.getStatus().name());
+                    Long examCycleId = examCycleRepository.getIdByExamCycleName(studentResult.getExamCycle_name());
+                    Long examId = examRepository.getIdByExamName(studentResult.getExam_name(),examCycleId);
+                    examDto.setExamId(examId);
                     return examDto;
                 })
                 .collect(Collectors.toList());
@@ -841,8 +844,9 @@ public class StudentResultService {
     public ResponseDto deleteExternalMarks(Long examCycleId, Long instituteId) {
         ResponseDto response = new ResponseDto(Constants.API_DELETE_FINAL_MARKS);
 
+        String examCycleName = examCycleRepository.getExamCycleNameById(examCycleId);
         // Logic to set external marks to null for all students of the given institute for the specified exam cycle
-        int updatedCount = studentResultRepository.setExternalMarksToNull(examCycleId, instituteId);
+        int updatedCount = studentResultRepository.setExternalMarksToNull(examCycleName, instituteId);
 
         if(updatedCount == 0) {
             ResponseDto.setErrorResponse(response, "NO_DATA_FOUND", "No external marks found for the provided criteria.", HttpStatus.NOT_FOUND);

@@ -116,7 +116,7 @@ public class Constants {
     public static final String API_FETCH_COURSE_BY_NAME = "api.studentResult.fetchCourseByName";
     public static final String API_FETCH_EXAM_BY_NAME = "api.studentResult.fetchExamByName";
     public static final String API_PUBLISH_RESULTS_FOR_COURSE_WITHIN_CYCLE = "api.studentResult.publishForCourse";
-    public static final String API_FIND_BY_ENROLLMENT_NUMBER_AND_DOB = "api.studentResult.findByEnrollmentAndDob";
+    public static final String API_FIND_BY_ENROLLMENT_NUMBER_AND_ExamCycle = "api.studentResult.findByEnrollmentAndExamCycle";
     public static final String API_UPDATE_RESULT_AFTER_RETOTALLING = "api.studentResult.updateAfterRetotalling";
     public static final String API_GET_RESULTS_BY_EXAM_CYCLE_AND_EXAM_GROUPED_BY_INSTITUTE = "api.studentResult.getByExamCycleAndGroupedByInstitute";
     public static final String API_BULK_UPLOAD_RESULTS = "api.studentResult.bulkUpload";

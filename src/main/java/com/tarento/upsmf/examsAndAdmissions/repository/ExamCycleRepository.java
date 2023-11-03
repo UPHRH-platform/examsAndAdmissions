@@ -31,4 +31,6 @@ public interface ExamCycleRepository extends JpaRepository<ExamCycle, Long> {
     List<ExamCycle> searchExamCycleByCourseIdAndStartYearAndEndYear(@Param("courseId") String courseId, @Param("startYear") Integer startYear, @Param("endYear") Integer endYear);
 
     List<ExamCycle> findByCourseInAndEndDateAfter(List<Course> courses, LocalDate currentDate);
+    @Query("select ec.id from ExamCycle ec  where ec.examCycleName =:examCycleName")
+    Long getIdByExamCycleName(String examCycleName);
 }
