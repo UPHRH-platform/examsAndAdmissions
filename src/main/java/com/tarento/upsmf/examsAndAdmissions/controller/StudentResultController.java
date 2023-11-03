@@ -48,8 +48,8 @@ public class StudentResultController {
     }
 
     @GetMapping("/results")
-    public ResponseEntity<ResponseDto> viewResults(@RequestParam String enrolmentNumber, @RequestParam Long examCycleId) {
-        return new ResponseEntity<>(studentResultService.findByEnrollmentNumberAndDateOfBirth(enrolmentNumber, examCycleId), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> viewResults(@RequestParam Long StudentId, @RequestParam Long examCycleId) {
+        return new ResponseEntity<>(studentResultService.findByStudentIdAndExamCycleId(StudentId, examCycleId), HttpStatus.OK);
     }
 
     @PostMapping("/requestRetotalling")
