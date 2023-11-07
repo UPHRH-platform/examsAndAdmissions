@@ -86,7 +86,7 @@ public class DataImporterService {
                                         String columnName = columnNames.get(columnIndex);
 
                                         try {
-                                            if (currentCell != null) { // Add this null check
+                                            if (currentCell != null) {
                                                 switch (currentCell.getCellType()) {
                                                     case STRING:
                                                         jsonObject.put(columnName, currentCell.getStringCellValue());
@@ -119,8 +119,9 @@ public class DataImporterService {
                         }
                         return null;
                     })
-                    .filter(Objects::nonNull) // Filter out rows with null values
+                    .filter(jsonObj -> jsonObj != null) // Filter out rows with null values
                     .collect(Collectors.collectingAndThen(Collectors.toList(), JSONArray::new));
+
 
             return jsonArray;
         }
