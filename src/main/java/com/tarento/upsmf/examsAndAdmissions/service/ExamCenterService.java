@@ -33,9 +33,11 @@ public class ExamCenterService {
     @Autowired
     private ExamCenterMapper examCenterMapper;
 
-    public ResponseDto getVerifiedExamCentersInDistrict(String district) {
+    public ResponseDto getVerifiedExamCentersInDistrict(String district,Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_GET_VERIFIED_EXAM_CENTERS);
-        List<ExamCenter> examCenters = examCenterRepository.findByDistrictAndApprovalStatus(district, ApprovalStatus.APPROVED);
+        ExamCycle examCycle = examCycleRepository.findById(examCycleId).orElseThrow();
+        List<ExamCenter> examCenters = examCenterRepository.findByDistrictAndExamCycleAndApprovalStatus(district,examCycle, ApprovalStatus.APPROVED);
+        System.out.println("Print size in console"+examCenters.size());
         if (!examCenters.isEmpty()) {
             List<ExamCenterDTO> examCenterDTOs = examCenterMapper.toDTOs(examCenters);
             response.put(Constants.MESSAGE, "Successful.");
@@ -96,14 +98,15 @@ public class ExamCenterService {
         return response;
     }
 
-    public ResponseDto updateCCTVStatus(Long examCenterId, CCTVStatusUpdateDTO updateDTO) {
+    public ResponseDto updateCCTVStatus(Long examCenterId, CCTVStatusUpdateDTO updateDTO,Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_UPDATE_CCTV_STATUS);
         ExamCenter center = examCenterRepository.findById(examCenterId).orElse(null);
         if (center == null) {
             ResponseDto.setErrorResponse(response, "CENTER_NOT_FOUND", "Exam center not found.", HttpStatus.NOT_FOUND);
             return response;
         }
-
+        ExamCycle examCycle = examCycleRepository.findById(examCycleId).orElseThrow();
+        center.setExamCycle(examCycle);
         center.setIpAddress(updateDTO.getIpAddress());
         center.setRemarks(updateDTO.getRemarks());
         center.setApprovalStatus(updateDTO.getApprovalStatus());
@@ -179,18 +182,18 @@ public class ExamCenterService {
         }
         return response;
     }
-    public ResponseDto getVerifiedCenterByInstituteCode(String instituteCode) {
+    public ResponseDto getVerifiedCenterByInstituteCode(String instituteCode,Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_GET_VERIFIED_EXAM_CENTER);
 
-        Optional<ExamCenter> examCenterOpt = examCenterRepository.findByInstituteCodeAndApprovalStatus(instituteCode, ApprovalStatus.APPROVED);
+        ExamCenter examCenterOpt = examCenterRepository.getByInstituteCodeAndExamCycleIdAndApprovalStatus(instituteCode,examCycleId, ApprovalStatus.APPROVED);
 
-        if (examCenterOpt.isPresent()) {
-            ExamCenterDTO examCenterDTO = examCenterMapper.toDTO(examCenterOpt.get());
+        if (examCenterOpt != null) {
+            ExamCenterDTO examCenterDTO = examCenterMapper.toDTO(examCenterOpt);
             response.put(Constants.MESSAGE, "Successful.");
             response.put(Constants.RESPONSE, examCenterDTO);
             response.setResponseCode(HttpStatus.OK);
         } else {
-            ResponseDto.setErrorResponse(response, "NO_VERIFIED_CENTER_FOUND", "No verified exam center found for the provided institute code.", HttpStatus.NOT_FOUND);
+            ResponseDto.setErrorResponse(response, "NO_VERIFIED_CENTER_FOUND", "No verified exam center found for the provided institute code and examCycle.", HttpStatus.NOT_FOUND);
         }
 
         return response;

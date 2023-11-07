@@ -46,7 +46,7 @@ public class RedisUtil {
             throw new RuntimeException("Invalid Request");
         }
         // check in redis
-        boolean keyExists = hashOperations.getOperations().hasKey(id);
+        boolean keyExists = Boolean.TRUE.equals(hashOperations.getOperations().hasKey(id));
         if(keyExists) {
             return hashOperations.get(userRedisHashKey, id);
         }
