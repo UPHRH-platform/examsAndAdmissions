@@ -49,44 +49,44 @@ public class ExamCenterService {
         return response;
     }
     @Transactional
-    public ResponseDto assignAlternateExamCenter(Long unverifiedExamCenterId, Long alternateExamCenterId) {
+    public ResponseDto assignAlternateExamCenter(Long unverifiedExamCenterId, Long alternateExamCenterId, Long examCycleId) {
         ResponseDto response = new ResponseDto("API_ASSIGN_ALTERNATE_EXAM_CENTER");
-
+        ExamCycle examCycle = examCycleRepository.findById(examCycleId).orElseThrow();
         try {
             // Fetch the unverified exam center
-            ExamCenter unverifiedExamCenter = examCenterRepository.findById(unverifiedExamCenterId)
-                    .orElseThrow(() -> new EntityNotFoundException("Unverified Exam Center not found"));
+            ExamCenter unverifiedExamCenter = examCenterRepository.getByIdAndExamCycle(unverifiedExamCenterId, examCycle)
+                    .orElseThrow(() -> new EntityNotFoundException("Unverified Exam Center not found for examCycle:" + examCycle.getId()));
 
             // Fetch the alternate exam center
-            ExamCenter alternateExamCenter = examCenterRepository.findById(alternateExamCenterId)
-                    .orElseThrow(() -> new EntityNotFoundException("Alternate Exam Center not found"));
+            ExamCenter alternateExamCenter = examCenterRepository.getByIdAndExamCycle(alternateExamCenterId, examCycle)
+                    .orElseThrow(() -> new EntityNotFoundException("Alternate Exam Center not found for examCycle:" + examCycle.getId()));
 
             // Ensure both the exam centers belong to the same district
             if (!unverifiedExamCenter.getDistrict().equals(alternateExamCenter.getDistrict())) {
                 throw new IllegalArgumentException("Unverified and Alternate Exam Centers do not belong to the same district.");
+            } else if (unverifiedExamCenter.getExamCycle().getId().equals(alternateExamCenter.getExamCycle().getId())) {
+
+                // Fetch all student registrations where the exam center is null
+                List<StudentExamRegistration> affectedRegistrations = studentExamRegistrationRepository.findByExamCenterIsNullAndInstitute(unverifiedExamCenter.getInstitute());
+
+                // Update the exam center for these registrations
+                for (StudentExamRegistration registration : affectedRegistrations) {
+                    registration.setExamCenter(alternateExamCenter);
+                    registration.setAlternateExamCenterAssigned(true);  // This is the new change
+                }
+
+                // Set the alternate exam center for the unverified exam center
+                unverifiedExamCenter.setAlternateExamCenter(alternateExamCenter);
+                unverifiedExamCenter.setAlternateExamCenterAssigned(true);
+                examCenterRepository.save(unverifiedExamCenter);
+
+                // Save the updated registrations
+                List<StudentExamRegistration> updatedRegistrations = studentExamRegistrationRepository.saveAll(affectedRegistrations);
+
+                response.put("message", "Alternate Exam Center assigned successfully.");
+                response.put(Constants.RESPONSE, updatedRegistrations);
+                response.setResponseCode(HttpStatus.OK);
             }
-
-            // Fetch all student registrations where the exam center is null
-            List<StudentExamRegistration> affectedRegistrations = studentExamRegistrationRepository.findByExamCenterIsNullAndInstitute(unverifiedExamCenter.getInstitute());
-
-            // Update the exam center for these registrations
-            for (StudentExamRegistration registration : affectedRegistrations) {
-                registration.setExamCenter(alternateExamCenter);
-                registration.setAlternateExamCenterAssigned(true);  // This is the new change
-            }
-
-            // Set the alternate exam center for the unverified exam center
-            unverifiedExamCenter.setAlternateExamCenter(alternateExamCenter);
-            unverifiedExamCenter.setAlternateExamCenterAssigned(true);
-            examCenterRepository.save(unverifiedExamCenter);
-
-            // Save the updated registrations
-            List<StudentExamRegistration> updatedRegistrations = studentExamRegistrationRepository.saveAll(affectedRegistrations);
-
-            response.put("message", "Alternate Exam Center assigned successfully.");
-            response.put(Constants.RESPONSE, updatedRegistrations);
-            response.setResponseCode(HttpStatus.OK);
-
         } catch (EntityNotFoundException e) {
             ResponseDto.setErrorResponse(response, "NOT_FOUND", e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
@@ -94,7 +94,6 @@ public class ExamCenterService {
         } catch (Exception e) {
             ResponseDto.setErrorResponse(response, "GENERAL_ERROR", "An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return response;
     }
 
