@@ -20,9 +20,9 @@ public class ExamCenterController {
         return new ResponseEntity<>(examCenterService.getVerifiedExamCentersInDistrict(district,examCycleId), HttpStatus.OK);
     }
 
-    @PutMapping("/assignAlternate/{originalExamCenterId}")
-    public ResponseEntity<ResponseDto> assignAlternateExamCenter(@PathVariable Long originalExamCenterId, @RequestParam Long alternateInstituteId) {
-        return new ResponseEntity<>(examCenterService.assignAlternateExamCenter(originalExamCenterId, alternateInstituteId), HttpStatus.OK);
+    @PutMapping("/assignAlternate")
+    public ResponseEntity<ResponseDto> assignAlternateExamCenter(@RequestParam Long originalExamCenterId, @RequestParam Long alternateInstituteId, @RequestParam Long examCycleId) {
+        return new ResponseEntity<>(examCenterService.assignAlternateExamCenter(originalExamCenterId, alternateInstituteId, examCycleId), HttpStatus.OK);
     }
 
     @GetMapping("/examCenters")
