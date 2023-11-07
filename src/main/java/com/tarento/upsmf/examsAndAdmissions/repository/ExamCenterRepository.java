@@ -22,6 +22,8 @@ public interface ExamCenterRepository extends JpaRepository<ExamCenter, Long> {
 
     Optional<ExamCenter> findByInstituteCodeAndApprovalStatus(String instituteCode, ApprovalStatus approvalStatus);
 
+    ExamCenter getByInstituteCodeAndExamCycleIdAndApprovalStatus(String instituteCode,Long ExamCycleId, ApprovalStatus approvalStatus);
     List<ExamCenter> findByExamCycle_Id(Long examCycleId);
     Optional<ExamCenter> findByExamCycleIdAndId(Long examCycleId, Long examCenterId);
+    List<ExamCenter> findByDistrictAndExamCycleAndApprovalStatus(String district, ExamCycle examCycleId, ApprovalStatus approvalStatus);
 }

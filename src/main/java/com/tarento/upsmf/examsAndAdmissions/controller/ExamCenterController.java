@@ -1,17 +1,12 @@
 package com.tarento.upsmf.examsAndAdmissions.controller;
 
-import com.tarento.upsmf.examsAndAdmissions.model.ExamCenter;
 import com.tarento.upsmf.examsAndAdmissions.model.ResponseDto;
 import com.tarento.upsmf.examsAndAdmissions.model.dto.CCTVStatusUpdateDTO;
-import com.tarento.upsmf.examsAndAdmissions.model.dto.ExamCenterDTO;
 import com.tarento.upsmf.examsAndAdmissions.service.ExamCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -21,8 +16,8 @@ public class ExamCenterController {
     private ExamCenterService examCenterService;
 
     @GetMapping("/verifiedExamCenters")
-    public ResponseEntity<ResponseDto> getVerifiedExamCenters(@RequestParam String district) {
-        return new ResponseEntity<>(examCenterService.getVerifiedExamCentersInDistrict(district), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> getVerifiedExamCenters(@RequestParam String district,@RequestParam Long examCycleId) {
+        return new ResponseEntity<>(examCenterService.getVerifiedExamCentersInDistrict(district,examCycleId), HttpStatus.OK);
     }
 
     @PutMapping("/assignAlternate/{originalExamCenterId}")
@@ -35,9 +30,9 @@ public class ExamCenterController {
         return new ResponseEntity<>(examCenterService.getExamCentersByStatus(examCycleId, isVerifiedStatus), HttpStatus.OK);
     }
 
-    @PutMapping("/updateCctvStatus/{examCenterId}")
-    public ResponseEntity<ResponseDto> updateCCTVStatus(@PathVariable Long examCenterId, @RequestBody CCTVStatusUpdateDTO updateDTO) {
-        return new ResponseEntity<>(examCenterService.updateCCTVStatus(examCenterId, updateDTO), HttpStatus.OK);
+    @PutMapping("/updateCctvStatus")
+    public ResponseEntity<ResponseDto> updateCCTVStatus(@RequestParam Long examCenterId, @RequestBody CCTVStatusUpdateDTO updateDTO,@RequestParam Long examCycleId) {
+        return new ResponseEntity<>(examCenterService.updateCCTVStatus(examCenterId, updateDTO,examCycleId), HttpStatus.OK);
     }
 
     @GetMapping("/examCenters/all")
@@ -49,8 +44,8 @@ public class ExamCenterController {
         return new ResponseEntity<>(examCenterService.getExamCentersByExamCycle(examCycleId), HttpStatus.OK);
     }
     @GetMapping("/examCenter/verified")
-    public ResponseDto getVerifiedCenter(@RequestParam String instituteCode) {
-        return examCenterService.getVerifiedCenterByInstituteCode(instituteCode);
+    public ResponseDto getVerifiedCenter(@RequestParam String instituteCode, @RequestParam Long examCycleId) {
+        return examCenterService.getVerifiedCenterByInstituteCode(instituteCode,examCycleId);
     }
     @GetMapping("/examCenterStatus")
     public ResponseEntity<ResponseDto> getExamCenterStatus(@RequestParam Long examCycleId, @RequestParam Long examCenterId) {
