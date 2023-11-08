@@ -144,15 +144,15 @@ public class DataImporterService {
                                 if (columnValue != null && !columnValue.isEmpty()) {
                                     if (columnType == Date.class) {
                                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                                        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
+                                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm"); // Use "HH:mm" for 24-hour time format
 
                                         try {
-                                            if (columnName.equals("Start Time") || columnName.equals("End Time")) {
+                                            if (columnName.equalsIgnoreCase("Start Time") || columnName.equalsIgnoreCase("End Time")) {
                                                 Date time = timeFormat.parse(columnValue);
-                                                map.put(columnName, timeFormat.format(time)); // Format the time as a string
-                                            } else if (columnName.equals("Start Date") || columnName.equals("End Date")) {
+                                                map.put(columnName, time); // Parse the time directly as a Date
+                                            } else if (columnName.equalsIgnoreCase("Start Date") || columnName.equalsIgnoreCase("End Date")) {
                                                 Date date = dateFormat.parse(columnValue);
-                                                map.put(columnName, dateFormat.format(date)); // Format the date as a string
+                                                map.put(columnName, date); // Parse the date directly as a Date
                                             }
                                         } catch (ParseException e) {
                                             e.printStackTrace(); // Handle parsing exceptions
@@ -455,6 +455,65 @@ public class DataImporterService {
         return resultDto;
     }
 
+    public ValidationResultDto convertResultDtoListToEntitiesRevisedMarks(List<StudentResult> dtoList, StudentResultRepository repository) {
+        List<StudentResult> entityList = new ArrayList<>();
+        List<String> validationErrors = new ArrayList<>();
+
+        for (StudentResult dto : dtoList) {
+            boolean isDuplicate = checkIfDataExists(dto);
+            //fetch data from student_exam_registration and set the flag there, if the record is not found break and return data invalid
+            if (isDuplicate) {
+                if (!DataValidation.isFirstNameValid(dto.getFirstName())) {
+                    validationErrors.add("- First Name is invalid: " + dto.getFirstName() + " First name has to contain alphabetic values only");
+                }
+                if (!DataValidation.isLastNameValid(dto.getLastName())) {
+                    validationErrors.add("- Last Name is invalid: " + dto.getLastName() + " Last name has to contain alphabetic values only");
+                }
+                if (!DataValidation.isEnrollmentNumberValid(dto.getEnrollmentNumber())) {
+                    validationErrors.add("- Enrollment Number is invalid: " + dto.getEnrollmentNumber() + " Enrollment number has to contain numerical values prefixed with EN");
+                }
+                if (!DataValidation.isMarksValid(dto.getExternalMarks())) {
+                    validationErrors.add("- External marks is invalid: " + dto.getExternalMarks() + " Marks have to be within 0 and 100");
+                }
+                if (!DataValidation.isPassingMarksValid(dto.getPassingExternalMarks())) {
+                    validationErrors.add("- Passing External Marks is invalid: " + dto.getPassingExternalMarks() + " Marks have to be within 0 and 100");
+                }
+                if (!DataValidation.isMarksValid(dto.getExternalMarksObtained())) {
+                    validationErrors.add("- External Marks Obtained is invalid: " + dto.getExternalMarksObtained() + " Marks have to be within 0 and 100");
+                }
+            }
+            if (validationErrors.isEmpty()) {
+                StudentResult existingEntity = repository.findByFirstNameAndLastNameAndEnrollmentNumber(dto.getFirstName(), dto.getLastName(), dto.getEnrollmentNumber());
+                List<StudentResult> marks = calculateResult(existingEntity.getInternalMarks(), existingEntity.getPassingInternalMarks(), existingEntity.getInternalMarksObtained(), existingEntity.getPracticalMarks(),
+                        existingEntity.getPassingPracticalMarks(), existingEntity.getPracticalMarksObtained(), dto.getExternalMarks(), dto.getPassingExternalMarks(), dto.getExternalMarksObtained());
+
+                existingEntity.setExternalMarks(dto.getExternalMarks());
+                existingEntity.setPassingExternalMarks(dto.getPassingExternalMarks());
+                existingEntity.setExternalMarksObtained(dto.getExternalMarksObtained());
+                existingEntity.setFinalMarkFlag(true);
+                existingEntity.setRevisedFinalMarkFlag(true);
+                existingEntity.setTotalMarks(marks.get(0).getTotalMarks());
+                existingEntity.setPassingTotalMarks(marks.get(0).getPassingTotalMarks());
+                existingEntity.setTotalMarksObtained(marks.get(0).getTotalMarksObtained());
+                existingEntity.setResult(marks.get(0).getResult());
+                existingEntity.setGrade(marks.get(0).getGrade());
+
+                entityList.add(existingEntity);
+            }
+        }
+
+        ValidationResultDto resultDto = new ValidationResultDto();
+        if (!validationErrors.isEmpty()) {
+            resultDto.setValid(false);
+            resultDto.setValidationErrors(validationErrors);
+        } else {
+            resultDto.setValid(true);
+            repository.saveAll(entityList);
+            resultDto.setSavedEntities(entityList);
+        }
+        return resultDto;
+    }
+
 
     private List<StudentResult> calculateResult(
             Integer internalMarks, Integer passingInternalMarks, Integer internalMarksObtained,
@@ -519,24 +578,9 @@ public class DataImporterService {
                 if (!DataValidation.isCourseNameValid(dto.getCourse())) {
                     validationErrors.add("- Course is invalid: " + dto.getCourse());
                 }
-//                if (!DataValidation.isDateValid(dto.getStartDate())) {
-//                    validationErrors.add("- Start Date is invalid: " + dto.getStartDate());
-//                }
-//                if (!DataValidation.isDateValid(dto.getEndDate())) {
-//                    validationErrors.add("- End Date is invalid: " + dto.getEndDate());
-//                }
                 if (!DataValidation.isExamValid(dto.getExamName())) {
                     validationErrors.add("- Exam Name is invalid: " + dto.getExamName());
                 }
-//                if (!DataValidation.isDateValid(dto.getDate())) {
-//                    validationErrors.add("- Date is invalid: " + dto.getDate());
-//                }
-//                if (!DataValidation.isTimeFormatValid(String.valueOf(dto.getStartTime()))) {
-//                    validationErrors.add("- Start Time is invalid: " + dto.getStartTime());
-//                }
-//                if (!DataValidation.isTimeFormatValid(String.valueOf(dto.getEndTime()))) {
-//                    validationErrors.add("- End Time is invalid: " + dto.getEndTime());
-//                }
                 if (!DataValidation.isMarksBetweenOneAndHundred(dto.getMaximumMarks())) {
                     validationErrors.add("- Maximum Marks should be between 1 and 100: " + dto.getMaximumMarks());
                 }
