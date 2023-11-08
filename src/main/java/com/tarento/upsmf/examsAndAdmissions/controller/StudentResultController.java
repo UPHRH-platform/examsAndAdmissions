@@ -77,6 +77,11 @@ public class StudentResultController {
         return new ResponseEntity<>(studentResultService.processBulkResultUploadWithExternals(file, fileType), HttpStatus.OK);
     }
 
+    @PutMapping("/bulkUploadRevised")
+    public ResponseEntity<ResponseDto> processBulkResultUploadWithRevisedMarks(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType) {
+        return new ResponseEntity<>(studentResultService.processBulkResultUploadWithRevisedMarks(file, fileType), HttpStatus.OK);
+    }
+
     @GetMapping("/manageResults")
     public ResponseEntity<ResponseDto> getExamResultsByExamCycle(
             @RequestParam Long examCycle) {

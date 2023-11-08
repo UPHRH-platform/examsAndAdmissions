@@ -675,6 +675,45 @@ public class StudentResultService {
             return ResponseDto.setErrorResponse(response, "INTERNAL_ERROR", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    public ResponseDto processBulkResultUploadWithRevisedMarks(MultipartFile file, String fileType) {
+        ResponseDto response = new ResponseDto(Constants.API_BULK_UPLOAD_RESULTS);
+
+        try {
+            JSONArray jsonArray;
+
+            switch (fileType.toLowerCase()) {
+                case Constants.CSV:
+                    jsonArray = dataImporterService.csvToJson(file,columnConfig);
+                    break;
+                case Constants.EXCEL:
+                    jsonArray = dataImporterService.excelToJson(file);
+                    break;
+                default:
+                    // Handle unsupported file type
+                    return ResponseDto.setErrorResponse(response, "UNSUPPORTED_FILE_TYPE", "Unsupported file type", HttpStatus.BAD_REQUEST);
+            }
+            String[] selectedColumns = { "First Name", "Last Name", "Enrolment Number","External Marks", "Passing External Marks", "External Marks Obtained" };
+            JSONArray filteredJsonArray = dataImporterService.filterColumns(jsonArray, selectedColumns);
+            List<StudentResult> dtoList = dataImporterService.convertJsonToDtoList(filteredJsonArray, StudentResult.class);
+            ValidationResultDto validationResult = dataImporterService.convertResultDtoListToEntitiesRevisedMarks(dtoList, studentResultRepository);
+
+            if (validationResult.isValid()) {
+                response.put(Constants.MESSAGE, "Bulk upload success");
+                response.put("Data",validationResult.getSavedEntities());
+                response.setResponseCode(HttpStatus.OK);
+            } else {
+                if (!validationResult.getValidationErrors().isEmpty()) {
+                    response.put("validationErrors", validationResult.getValidationErrors());
+                    response.setResponseCode(HttpStatus.BAD_REQUEST);
+                } else {
+                    return ResponseDto.setErrorResponse(response, "INTERNAL_ERROR", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+            return response;
+        } catch (Exception e) {
+            return ResponseDto.setErrorResponse(response, "INTERNAL_ERROR", "An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     public ResponseDto getResultsByInstituteAndExamCycle(Long instituteId, Long examCycleId) {
