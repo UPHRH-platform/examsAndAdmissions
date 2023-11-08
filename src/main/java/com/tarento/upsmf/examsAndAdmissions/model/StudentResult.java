@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "student_results")
@@ -87,6 +88,7 @@ public class StudentResult {
     private String grade;
     @JsonProperty("Result")
     private String result;
+    private Date publishedDate;
 
     @Enumerated(EnumType.STRING)
     private ResultStatus status = ResultStatus.ENTERED;
@@ -97,52 +99,4 @@ public class StudentResult {
     private boolean revisedFinalMarkFlag;
     private LocalDate lastDateToUploadInternalMarks;
     private long instituteId;
-
-    public StudentResult(Student student, String firstName, String lastName, String enrollmentNumber,
-                           String motherName, String fatherName, Course course, String course_name,
-                           ExamCycle examCycle, String examCycle_name, Exam exam, String exam_name,
-                           Integer internalMarks, Integer passingInternalMarks, Integer internalMarksObtained,
-                           Integer practicalMarks, Integer passingPracticalMarks, Integer practicalMarksObtained,
-                           Integer otherMarks, Integer passingOtherMarks, Integer otherMarksObtained,
-                           Integer externalMarks, Integer passingExternalMarks, Integer externalMarksObtained,
-                           Integer totalMarks, Integer passingTotalMarks, Integer totalMarksObtained,
-                           String grade, String result, ResultStatus status, boolean published, boolean internalMarkFlag, boolean finalMarkFlag, boolean revisedFinalMarkFlag,LocalDate lastDateToUploadInternalMarks, long instituteId) {
-
-        this.student = student;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.enrollmentNumber = enrollmentNumber;
-        this.motherName = motherName;
-        this.fatherName = fatherName;
-        this.course = course;
-        this.course_name = course_name;
-        this.examCycle = examCycle;
-        this.examCycle_name = examCycle_name;
-        this.exam = exam;
-        this.exam_name = exam_name;
-        this.internalMarks = internalMarks;
-        this.passingInternalMarks = passingInternalMarks;
-        this.internalMarksObtained = internalMarksObtained;
-        this.practicalMarks = practicalMarks;
-        this.passingPracticalMarks = passingPracticalMarks;
-        this.practicalMarksObtained = practicalMarksObtained;
-        this.otherMarks = otherMarks;
-        this.passingOtherMarks = passingOtherMarks;
-        this.otherMarksObtained = otherMarksObtained;
-        this.externalMarks = externalMarks;
-        this.passingExternalMarks = passingExternalMarks;
-        this.externalMarksObtained = externalMarksObtained;
-        this.totalMarks = totalMarks;
-        this.passingTotalMarks = passingTotalMarks;
-        this.totalMarksObtained = totalMarksObtained;
-        this.grade = grade;
-        this.result = result;
-        this.status = status;
-        this.published = published;
-        this.internalMarkFlag = internalMarkFlag;
-        this.finalMarkFlag = finalMarkFlag;
-        this.revisedFinalMarkFlag = revisedFinalMarkFlag;
-        this.lastDateToUploadInternalMarks=lastDateToUploadInternalMarks;
-        this.instituteId=instituteId;
-    }
 }
