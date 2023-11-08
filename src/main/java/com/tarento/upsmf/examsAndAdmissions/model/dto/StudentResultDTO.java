@@ -4,6 +4,7 @@ import com.tarento.upsmf.examsAndAdmissions.enums.ResultStatus;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -16,5 +17,6 @@ public class StudentResultDTO {
     private LocalDate dateOfBirth;
     private String courseName;
     private String courseYear;
+    private Date publishedDate;
     private List<ExamDetailsDTO> examDetails;
 }

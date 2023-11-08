@@ -14,4 +14,5 @@ public class ExamDetailsDTO {
     private String result;
     private String status;
     private Long examId;
+    private boolean hasRevisedFinalMarkFlag;
 }

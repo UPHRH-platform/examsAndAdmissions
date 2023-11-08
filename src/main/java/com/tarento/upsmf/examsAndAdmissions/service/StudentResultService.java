@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -391,10 +393,12 @@ public class StudentResultService {
     public ResponseDto publishResultsForCourseWithinCycle(Long courseId, Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_PUBLISH_RESULTS_FOR_COURSE_WITHIN_CYCLE);
         List<StudentResult> resultsForCourse = studentResultRepository.findByCourse_IdAndExam_ExamCycleIdAndPublished(courseId, examCycleId, false);
-
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         if (!resultsForCourse.isEmpty()) {
             for (StudentResult result : resultsForCourse) {
                 result.setPublished(true);
+                result.setPublishedDate(date);
             }
             studentResultRepository.saveAll(resultsForCourse);
             response.put(Constants.MESSAGE, "Successfully published results.");
@@ -445,6 +449,7 @@ public class StudentResultService {
         Student student = studentRepository.findByEnrollmentNumber(firstResult.getEnrollmentNumber()).orElseThrow();
 //        dto.setDateOfBirth(firstResult.getStudent().getDateOfBirth());
         dto.setDateOfBirth(student.getDateOfBirth());
+        dto.setPublishedDate(firstResult.getPublishedDate());
         if (firstResult.getExamCycle_name() != null) {
             ExamCycle examCycle = examCycleRepository.findByExamCycleName(firstResult.getExamCycle_name());
             if (examCycle.getCourse() != null) {
@@ -466,6 +471,7 @@ public class StudentResultService {
                     Long examCycleId = examCycleRepository.getIdByExamCycleName(studentResult.getExamCycle_name());
                     Long examId = examRepository.getIdByExamName(studentResult.getExam_name(),examCycleId);
                     examDto.setExamId(examId);
+                    examDto.setHasRevisedFinalMarkFlag(studentResult.isRevisedFinalMarkFlag());
                     return examDto;
                 })
                 .collect(Collectors.toList());
@@ -799,6 +805,7 @@ public class StudentResultService {
             instituteResult.setHasInternalMarks(result.isInternalMarkFlag());
             instituteResult.setHasFinalMarks(result.isFinalMarkFlag());
             instituteResult.setHasRevisedFinalMarks(result.isRevisedFinalMarkFlag());
+            instituteResult.setHasPublished(result.isPublished());
         }
         return processedResults;
     }
