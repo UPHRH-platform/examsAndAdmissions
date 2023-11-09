@@ -1,6 +1,7 @@
 package com.tarento.upsmf.examsAndAdmissions.model.dto;
 
 import com.tarento.upsmf.examsAndAdmissions.model.Exam;
+import com.tarento.upsmf.examsAndAdmissions.model.ExamCycle;
 import com.tarento.upsmf.examsAndAdmissions.model.Student;
 import lombok.*;
 
@@ -20,6 +21,9 @@ public class DataCorrectionRequest {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
     private Student student;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "exam_cycle_id")
+    private ExamCycle examCycle;
     private String requestedCorrection;
     private String status;
     private String rejectionReason;

@@ -425,7 +425,7 @@ public class DataImporterService {
                 }
             }
             if (validationErrors.isEmpty()) {
-                StudentResult existingEntity = repository.findByFirstNameAndLastNameAndEnrollmentNumber(dto.getFirstName(), dto.getLastName(), dto.getEnrollmentNumber());
+                StudentResult existingEntity = repository.findByFirstNameAndLastNameAndEnrollmentNumberAndExamName(dto.getFirstName(), dto.getLastName(), dto.getEnrollmentNumber(), dto.getExam_name());
                 List<StudentResult> marks = calculateResult(existingEntity.getInternalMarks(), existingEntity.getPassingInternalMarks(), existingEntity.getInternalMarksObtained(), existingEntity.getPracticalMarks(),
                         existingEntity.getPassingPracticalMarks(), existingEntity.getPracticalMarksObtained(), dto.getExternalMarks(), dto.getPassingExternalMarks(), dto.getExternalMarksObtained());
 
@@ -483,7 +483,7 @@ public class DataImporterService {
                 }
             }
             if (validationErrors.isEmpty()) {
-                StudentResult existingEntity = repository.findByFirstNameAndLastNameAndEnrollmentNumber(dto.getFirstName(), dto.getLastName(), dto.getEnrollmentNumber());
+                StudentResult existingEntity = repository.findByFirstNameAndLastNameAndEnrollmentNumberAndExamName(dto.getFirstName(), dto.getLastName(), dto.getEnrollmentNumber(),dto.getExam_name());
                 List<StudentResult> marks = calculateResult(existingEntity.getInternalMarks(), existingEntity.getPassingInternalMarks(), existingEntity.getInternalMarksObtained(), existingEntity.getPracticalMarks(),
                         existingEntity.getPassingPracticalMarks(), existingEntity.getPracticalMarksObtained(), dto.getExternalMarks(), dto.getPassingExternalMarks(), dto.getExternalMarksObtained());
 
