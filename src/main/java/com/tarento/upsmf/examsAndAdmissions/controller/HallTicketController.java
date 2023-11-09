@@ -86,6 +86,7 @@ public class HallTicketController {
     @PostMapping("/dataCorrection/request")
     public ResponseEntity<ResponseDto> requestDataCorrection(
             @RequestParam("studentId") Long studentId,
+            @RequestParam("examCycleId") Long examCycleId,
             @RequestParam(value = "updatedFirstName", required = false) Optional<String> updatedFirstNameOpt,
             @RequestParam(value = "updatedLastName", required = false) Optional<String> updatedLastNameOpt,
             @RequestParam(value = "updatedDOB", required = false) Optional<String> dobOpt, // Taking as string for optional handling
@@ -96,7 +97,7 @@ public class HallTicketController {
         String updatedLastName = updatedLastNameOpt.orElse(null);
         LocalDate updatedDOB = dobOpt.isPresent() ? LocalDate.parse(dobOpt.get()) : null;
 
-        ResponseDto responseDto = hallTicketService.requestHallTicketDataCorrection(studentId, updatedFirstName, updatedLastName, updatedDOB, proof);
+        ResponseDto responseDto = hallTicketService.requestHallTicketDataCorrection(studentId,examCycleId, updatedFirstName, updatedLastName, updatedDOB, proof);
         return ResponseEntity.status(responseDto.getResponseCode().value()).body(responseDto);
     }
 

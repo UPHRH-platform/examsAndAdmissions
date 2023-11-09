@@ -51,6 +51,8 @@ public class HallTicketService {
     DataCorrectionRequestRepository dataCorrectionRequestRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private ExamCycleRepository examCycleRepository;
 
     @Autowired
     private StudentExamRegistrationRepository studentExamRegistrationRepository;
@@ -253,6 +255,7 @@ public class HallTicketService {
     }
 
     public ResponseDto requestHallTicketDataCorrection(Long studentId,
+                                                       Long examCycleId,
                                                        String updatedFirstName,
                                                        String updatedLastName,
                                                        LocalDate updatedDOB,
@@ -271,6 +274,12 @@ public class HallTicketService {
                 setErrorResponse(response, "PROOF_MISSING", "Proof attachment is required", HttpStatus.BAD_REQUEST);
                 return response;
             }
+            Optional<ExamCycle> optionalExamCycle = examCycleRepository.findById(examCycleId);
+
+            if (!optionalExamCycle.isPresent()) {
+                setErrorResponse(response, "INVALID_EXAMCYCLEID", "Invalid ExamCycle ID", HttpStatus.BAD_REQUEST);
+                return response;
+            }
 
             DataCorrectionRequest request = new DataCorrectionRequest();
             request.setStudent(optionalStudent.get());
@@ -283,6 +292,7 @@ public class HallTicketService {
             if (updatedDOB != null) {
                 request.setUpdatedDOB(updatedDOB);
             }
+            request.setExamCycle(optionalExamCycle.get());
             request.setStatus("NEW");
 
             String path = studentService.storeFile(proof);
@@ -330,7 +340,7 @@ public class HallTicketService {
                 formattedRequest.put("lastName", student.getSurname());  // changed from 'surName'
                 formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
 
-                StudentExamRegistration registration = studentExamRegistrationRepository.findByStudent(student);
+                StudentExamRegistration registration = studentExamRegistrationRepository.getByStudentIdAndExamCycleId(student.getId(),request.getExamCycle().getId());
                 if (registration != null) {
                     Map<String, Object> examCycleData = new HashMap<>();
                     ExamCycle examCycle = registration.getExamCycle();
