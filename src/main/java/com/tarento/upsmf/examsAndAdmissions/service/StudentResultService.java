@@ -659,7 +659,7 @@ public class StudentResultService {
                     // Handle unsupported file type
                     return ResponseDto.setErrorResponse(response, "UNSUPPORTED_FILE_TYPE", "Unsupported file type", HttpStatus.BAD_REQUEST);
             }
-            String[] selectedColumns = { "First Name", "Last Name", "Enrolment Number","External Marks", "Passing External Marks", "External Marks Obtained" };
+            String[] selectedColumns = { "First Name", "Last Name", "Enrolment Number", "Exam", "External Marks", "Passing External Marks", "External Marks Obtained" };
             JSONArray filteredJsonArray = dataImporterService.filterColumns(jsonArray, selectedColumns);
             List<StudentResult> dtoList = dataImporterService.convertJsonToDtoList(filteredJsonArray, StudentResult.class);
             ValidationResultDto validationResult = dataImporterService.convertResultDtoListToEntitiesExternalMarks(dtoList, studentResultRepository);
@@ -698,7 +698,7 @@ public class StudentResultService {
                     // Handle unsupported file type
                     return ResponseDto.setErrorResponse(response, "UNSUPPORTED_FILE_TYPE", "Unsupported file type", HttpStatus.BAD_REQUEST);
             }
-            String[] selectedColumns = { "First Name", "Last Name", "Enrolment Number","External Marks", "Passing External Marks", "External Marks Obtained" };
+            String[] selectedColumns = { "First Name", "Last Name", "Enrolment Number", "Exam", "External Marks", "Passing External Marks", "External Marks Obtained" };
             JSONArray filteredJsonArray = dataImporterService.filterColumns(jsonArray, selectedColumns);
             List<StudentResult> dtoList = dataImporterService.convertJsonToDtoList(filteredJsonArray, StudentResult.class);
             ValidationResultDto validationResult = dataImporterService.convertResultDtoListToEntitiesRevisedMarks(dtoList, studentResultRepository);
