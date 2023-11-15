@@ -103,8 +103,8 @@ public class HallTicketController {
 
 
     @GetMapping("/dataCorrection/requests")
-    public ResponseEntity<ResponseDto> viewDataCorrectionRequests() {
-        ResponseDto responseDto = hallTicketService.getAllDataCorrectionRequests();
+    public ResponseEntity<ResponseDto> viewDataCorrectionRequests(@RequestParam(value = "examCycleId", required = false) Optional<Long> examCycleId) {
+        ResponseDto responseDto = hallTicketService.getAllDataCorrectionRequests(examCycleId);
         return ResponseEntity.status(responseDto.getResponseCode().value()).body(responseDto);
     }
 

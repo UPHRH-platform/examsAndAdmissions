@@ -321,9 +321,14 @@ public class HallTicketService {
         return dto;
     }
 
-    public ResponseDto getAllDataCorrectionRequests() {
+    public ResponseDto getAllDataCorrectionRequests(Optional<Long> examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_GET_ALL_DATA_CORRECTION_REQUESTS);
-        List<DataCorrectionRequest> requests = dataCorrectionRequestRepository.findAll();
+        List<DataCorrectionRequest> requests;
+        if (examCycleId.isPresent()) {
+            requests = dataCorrectionRequestRepository.getByExamCycleId(examCycleId);
+        } else {
+            requests = dataCorrectionRequestRepository.findAll();
+        }
         List<Map<String, Object>> formattedRequests = new ArrayList<>();
 
         for (DataCorrectionRequest request : requests) {
@@ -340,7 +345,7 @@ public class HallTicketService {
                 formattedRequest.put("lastName", student.getSurname());  // changed from 'surName'
                 formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
 
-                StudentExamRegistration registration = studentExamRegistrationRepository.getByStudentIdAndExamCycleId(student.getId(),request.getExamCycle().getId());
+                StudentExamRegistration registration = studentExamRegistrationRepository.getByStudentIdAndExamCycleId(student.getId(), request.getExamCycle().getId());
                 if (registration != null) {
                     Map<String, Object> examCycleData = new HashMap<>();
                     ExamCycle examCycle = registration.getExamCycle();
@@ -660,9 +665,10 @@ public class HallTicketService {
     private double computeAttendancePercentage(StudentExamRegistration registration) {
         // Fetch the student enrollment number from the associated student
         String studentEnrollmentNumber = registration.getStudent().getEnrollmentNumber();
+        String examCycleData = registration.getExamCycle().getExamCycleName();
 
         // Check if an attendance record exists for this student enrollment number
-        if (!attendanceRepository.existsByStudentEnrollmentNumber(studentEnrollmentNumber)) {
+        if (!attendanceRepository.existsByStudentEnrollmentNumberAndExamCycleData(studentEnrollmentNumber,examCycleData)) {
             return 0.0;
         }
 
