@@ -700,15 +700,13 @@ public class HallTicketService {
         public ResponseDto getDetailsByStudentIdAndExamCycleId(Long studentId, Long examCycleId) {
             ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_GET_DETAILS_BY_STUDENT_AND_EXAM_CYCLE);
 
-            Optional<StudentExamRegistration> optionalRegistration =
-                    studentExamRegistrationRepository.findByStudentIdAndExamCycleId(studentId, examCycleId);
+            List<StudentExamRegistration> registrationList = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(examCycleId, studentId);
 
-            if (!optionalRegistration.isPresent()) {
+            if (registrationList == null) {
                 ResponseDto.setErrorResponse(response, "NOT_FOUND", "No data found for given student ID and exam cycle ID.", HttpStatus.NOT_FOUND);
                 return response;
             }
-
-            StudentExamRegistration registration = optionalRegistration.get();
+            StudentExamRegistration registration = registrationList.get(0);
 
             Map<String, Object> formattedData = new HashMap<>();
 
