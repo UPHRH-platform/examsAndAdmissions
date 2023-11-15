@@ -346,10 +346,10 @@ public class HallTicketService {
                 formattedRequest.put("lastName", student.getSurname());  // changed from 'surName'
                 formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
 
-                StudentExamRegistration registration = studentExamRegistrationRepository.getByStudentIdAndExamCycleId(student.getId(), request.getExamCycle().getId());
+                List<StudentExamRegistration> registration = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(request.getExamCycle().getId(), student.getId()) ;
                 if (registration != null) {
                     Map<String, Object> examCycleData = new HashMap<>();
-                    ExamCycle examCycle = registration.getExamCycle();
+                    ExamCycle examCycle = registration.get(0).getExamCycle();
 
                     examCycleData.put("id", examCycle.getId());
                     examCycleData.put("examCyclename", examCycle.getExamCycleName());
