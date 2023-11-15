@@ -61,4 +61,6 @@ public interface StudentExamRegistrationRepository extends JpaRepository<Student
     StudentExamRegistration getByStudentId(Long id);
 
     StudentExamRegistration getByStudentIdAndExamCycleId(Long studentId, Long examCycleId);
+
+    List<StudentExamRegistration> getByExamCycleIdAndStudentId(Long examCycleId, Long studentId);
 }
