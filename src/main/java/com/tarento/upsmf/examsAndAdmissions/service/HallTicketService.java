@@ -41,6 +41,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 @Service
 @Slf4j
 public class HallTicketService {
@@ -330,70 +333,97 @@ public class HallTicketService {
         } else {
             requests = dataCorrectionRequestRepository.findAll();
         }
-        List<Map<String, Object>> formattedRequests = new ArrayList<>();
+        if (!requests.isEmpty()) {
+            List<Map<String, Object>> formattedRequests = new ArrayList<>();
 
-        for (DataCorrectionRequest request : requests) {
-            Map<String, Object> formattedRequest = new HashMap<>();
-            formattedRequest.put("id", request.getId());
-            formattedRequest.put("requestedCorrection", request.getRequestedCorrection());
-            formattedRequest.put("status", request.getStatus());
-            formattedRequest.put("rejectionReason", request.getRejectionReason());
-            formattedRequest.put("proofAttachmentPath", request.getProofAttachmentPath());
+            for (DataCorrectionRequest request : requests) {
+                Map<String, Object> formattedRequest = new HashMap<>();
+                formattedRequest.put("id", request.getId());
+                formattedRequest.put("requestedCorrection", request.getRequestedCorrection());
+                formattedRequest.put("status", request.getStatus());
+                formattedRequest.put("rejectionReason", request.getRejectionReason());
+                formattedRequest.put("proofAttachmentPath", request.getProofAttachmentPath());
+                formattedRequest.put("firstName", request.getUpdatedFirstName());
+                formattedRequest.put("lastName", request.getUpdatedLastName());
+                formattedRequest.put("dob", request.getUpdatedDOB());
 
-            if (request.getStudent() != null) {
-                Student student = request.getStudent();
-                formattedRequest.put("firstName", student.getFirstName());
-                formattedRequest.put("lastName", student.getSurname());  // changed from 'surName'
-                formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
-
-                List<StudentExamRegistration> registration = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(request.getExamCycle().getId(), student.getId()) ;
-                if (registration != null) {
-                    Map<String, Object> examCycleData = new HashMap<>();
-                    ExamCycle examCycle = registration.get(0).getExamCycle();
-
-                    examCycleData.put("id", examCycle.getId());
-                    examCycleData.put("examCyclename", examCycle.getExamCycleName());
-                    examCycleData.put("startDate", examCycle.getStartDate());
-                    examCycleData.put("endDate", examCycle.getEndDate());
-                    examCycleData.put("createdBy", examCycle.getCreatedBy());
-                    examCycleData.put("modifiedBy", examCycle.getModifiedBy());
-                    examCycleData.put("status", examCycle.getStatus());
-                    examCycleData.put("obsolete", examCycle.getObsolete());
-
-                    List<Map<String, Object>> examsData = new ArrayList<>();
-                    List<Exam> exams = examRepository.findByExamCycleId(examCycle.getId());
-                    for (Exam exam : exams) {
-                        Map<String, Object> examData = new HashMap<>();
-
-                        examData.put("examName", exam.getExamName());
-                        examData.put("examDate", exam.getExamDate());
-                        examData.put("startTime", exam.getStartTime());
-                        examData.put("endTime", exam.getEndTime());
-                        examData.put("createdBy", exam.getCreatedBy());
-                        examData.put("modifiedBy", exam.getModifiedBy());
-                        examData.put("isResultsPublished", exam.getIsResultsPublished());
-                        examData.put("obsolete", exam.getObsolete());
-
-                        examsData.add(examData);
+                if (request.getStudent() != null) {
+                    Student student = request.getStudent();
+                    formattedRequest.put("prevFirstName", student.getFirstName());
+                    formattedRequest.put("prevLastName", student.getSurname());  // changed from 'surName'
+                    formattedRequest.put("prevDob", student.getDateOfBirth());
+                    formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
+                    if (Objects.equals(request.getUpdatedFirstName(), student.getFirstName())){
+                        formattedRequest.put("firstNameFlag",TRUE);
+                    }
+                    else {
+                        formattedRequest.put("firstNameFlag",FALSE);
+                    }
+                    if (Objects.equals(request.getUpdatedLastName(), student.getSurname())){
+                        formattedRequest.put("lastNameFlag",TRUE);
+                    }
+                    else {
+                        formattedRequest.put("lastNameFlag",FALSE);
+                    }
+                    if (request.getUpdatedDOB() == student.getDateOfBirth()){
+                        formattedRequest.put("dobFlag",TRUE);
+                    }
+                    else {
+                        formattedRequest.put("dobFlag",FALSE);
                     }
 
-                    examCycleData.put("exams", examsData);
-                    formattedRequest.put("examCycle", examCycleData);
+                    List<StudentExamRegistration> registration = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(request.getExamCycle().getId(), request.getStudent().getId());
+                    if (!registration.isEmpty()) {
+                        Map<String, Object> examCycleData = new HashMap<>();
+                        ExamCycle examCycle = request.getExamCycle();
+
+                        examCycleData.put("id", examCycle.getId());
+                        examCycleData.put("examCyclename", examCycle.getExamCycleName());
+                        examCycleData.put("startDate", examCycle.getStartDate());
+                        examCycleData.put("endDate", examCycle.getEndDate());
+                        examCycleData.put("createdBy", examCycle.getCreatedBy());
+                        examCycleData.put("modifiedBy", examCycle.getModifiedBy());
+                        examCycleData.put("status", examCycle.getStatus());
+                        examCycleData.put("obsolete", examCycle.getObsolete());
+
+                        List<Map<String, Object>> examsData = new ArrayList<>();
+                        List<Exam> exams = examRepository.findByExamCycleId(examCycle.getId());
+                        for (Exam exam : exams) {
+                            Map<String, Object> examData = new HashMap<>();
+
+                            examData.put("examName", exam.getExamName());
+                            examData.put("examDate", exam.getExamDate());
+                            examData.put("startTime", exam.getStartTime());
+                            examData.put("endTime", exam.getEndTime());
+                            examData.put("createdBy", exam.getCreatedBy());
+                            examData.put("modifiedBy", exam.getModifiedBy());
+                            examData.put("isResultsPublished", exam.getIsResultsPublished());
+                            examData.put("obsolete", exam.getObsolete());
+
+                            examsData.add(examData);
+                        }
+
+                        examCycleData.put("exams", examsData);
+                        formattedRequest.put("examCycle", examCycleData);
+                    }
                 }
+
+                formattedRequests.add(formattedRequest);
             }
 
-            formattedRequests.add(formattedRequest);
-        }
+            if (!formattedRequests.isEmpty()) {
+                response.put(Constants.MESSAGE, Constants.SUCCESSFUL);
+                response.put(Constants.RESPONSE, formattedRequests);
+                response.setResponseCode(HttpStatus.OK);
+            } else {
+                ResponseDto.setErrorResponse(response, "NO_DATA_CORRECTION_REQUESTS", "No data correction requests found.", HttpStatus.NOT_FOUND);
+            }
 
-        if (!formattedRequests.isEmpty()) {
-            response.put(Constants.MESSAGE, Constants.SUCCESSFUL);
-            response.put(Constants.RESPONSE, formattedRequests);
-            response.setResponseCode(HttpStatus.OK);
-        } else {
-            ResponseDto.setErrorResponse(response, "NO_DATA_CORRECTION_REQUESTS", "No data correction requests found.", HttpStatus.NOT_FOUND);
+            return response;
+        }else {
+            setErrorResponse(response, "NO_DATA_FOUND", "No data found for provided details", HttpStatus.NOT_FOUND);
+            return response;
         }
-
-        return response;
     }
 
     public ResponseDto approveDataCorrection(Long requestId) {
