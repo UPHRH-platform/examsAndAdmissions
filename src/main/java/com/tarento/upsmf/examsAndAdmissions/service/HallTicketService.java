@@ -128,6 +128,7 @@ public class HallTicketService {
 
         return responseDto;
     }
+
     public ResponseDto getHallTicketForStudent(Long id, String dateOfBirth) {
         ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_GET);
 
@@ -517,6 +518,7 @@ public class HallTicketService {
         response.setError(errorDetails);
         response.setResponseCode(status);
     }
+
     private byte[] generateHallTicket(StudentExamRegistration registration) {
         PDDocument document = new PDDocument();
         // Get the exam cycle for the registration
@@ -586,6 +588,7 @@ public class HallTicketService {
 
         return baos.toByteArray();
     }
+
     private List<StudentExamRegistration> fetchPendingDataForHallTickets(Long courseId, Long examCycleId, Long instituteId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StudentExamRegistration> criteriaQuery = criteriaBuilder.createQuery(StudentExamRegistration.class);
@@ -662,13 +665,14 @@ public class HallTicketService {
 
         return dto;
     }
+
     private double computeAttendancePercentage(StudentExamRegistration registration) {
         // Fetch the student enrollment number from the associated student
         String studentEnrollmentNumber = registration.getStudent().getEnrollmentNumber();
         String examCycleData = registration.getExamCycle().getExamCycleName();
 
         // Check if an attendance record exists for this student enrollment number
-        if (!attendanceRepository.existsByStudentEnrollmentNumberAndExamCycleData(studentEnrollmentNumber,examCycleData)) {
+        if (!attendanceRepository.existsByStudentEnrollmentNumberAndExamCycleData(studentEnrollmentNumber, examCycleData)) {
             return 0.0;
         }
 
@@ -697,15 +701,15 @@ public class HallTicketService {
         return response.getBody();
     }
 
-        public ResponseDto getDetailsByStudentIdAndExamCycleId(Long studentId, Long examCycleId) {
-            ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_GET_DETAILS_BY_STUDENT_AND_EXAM_CYCLE);
+    public ResponseDto getDetailsByStudentIdAndExamCycleId(Long studentId, Long examCycleId) {
+        ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_GET_DETAILS_BY_STUDENT_AND_EXAM_CYCLE);
 
-            List<StudentExamRegistration> registrationList = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(examCycleId, studentId);
+        List<StudentExamRegistration> registrationList = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(examCycleId, studentId);
 
-            if (registrationList == null) {
-                ResponseDto.setErrorResponse(response, "NOT_FOUND", "No data found for given student ID and exam cycle ID.", HttpStatus.NOT_FOUND);
-                return response;
-            }
+        if (registrationList.isEmpty()) {
+            ResponseDto.setErrorResponse(response, "NOT_FOUND", "No data found for given student ID and exam cycle ID.", HttpStatus.NOT_FOUND);
+            return response;
+        } else {
             StudentExamRegistration registration = registrationList.get(0);
 
             Map<String, Object> formattedData = new HashMap<>();
@@ -716,16 +720,16 @@ public class HallTicketService {
             formattedData.put("lastName", student.getSurname());
             formattedData.put("enrollmentNumber", student.getEnrollmentNumber());
             formattedData.put("dateOfBirth", student.getDateOfBirth());
-            if(student.getCourse() != null) {
+            if (student.getCourse() != null) {
                 formattedData.put("courseName", student.getCourse().getCourseName());
                 formattedData.put("courseYear", student.getCourse().getCourseYear());
             }
             // Add Hall Ticket details
-            if(registration.getHallTicketStatus() != null) {
+            if (registration.getHallTicketStatus() != null) {
                 formattedData.put("hallTicketStatus", registration.getHallTicketStatus().toString());  // assuming HallTicketStatus is an enum
             }
 
-            if(registration.getHallTicketGenerationDate() != null) {
+            if (registration.getHallTicketGenerationDate() != null) {
                 formattedData.put("hallTicketGenerationDate", registration.getHallTicketGenerationDate());
             }
 
@@ -770,4 +774,5 @@ public class HallTicketService {
 
             return response;
         }
+    }
 }
