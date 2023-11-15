@@ -777,7 +777,7 @@ public class DataImporterService {
     }
 
     private boolean checkIfDataExists(AttendanceRecord dto) {
-        return attendanceRepository.existsByStudentEnrollmentNumber(dto.getStudentEnrollmentNumber());
+        return attendanceRepository.existsByStudentEnrollmentNumberAndExamCycleData(dto.getStudentEnrollmentNumber(),dto.getExamCycleData());
     }
 
     private boolean checkIfDataExists(ExamUploadData dto) {

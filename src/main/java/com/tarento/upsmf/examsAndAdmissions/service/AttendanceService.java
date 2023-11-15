@@ -65,10 +65,11 @@ public class AttendanceService {
                 continue;  // Skip this iteration if the row is empty
             }
             String studentEnrollmentNumber = getStringValue(row.getCell(2));
+            String examCycleId = getStringValue(row.getCell(6));
             AttendanceRecord record;
 
             // If record already exists, fetch it, otherwise create a new one
-            if (attendanceRepository.existsByStudentEnrollmentNumber(studentEnrollmentNumber)) {
+            if (attendanceRepository.existsByStudentEnrollmentNumberAndExamCycleData(studentEnrollmentNumber,examCycleId)) {
                 record = attendanceRepository.findByStudentEnrollmentNumber(studentEnrollmentNumber);
             } else {
                 record = new AttendanceRecord();
