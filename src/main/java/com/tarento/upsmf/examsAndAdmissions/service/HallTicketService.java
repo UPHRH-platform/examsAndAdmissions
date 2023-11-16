@@ -354,22 +354,22 @@ public class HallTicketService {
                     formattedRequest.put("prevDob", student.getDateOfBirth());
                     formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
                     if (Objects.equals(request.getUpdatedFirstName(), student.getFirstName())){
-                        formattedRequest.put("firstNameFlag",TRUE);
-                    }
-                    else {
                         formattedRequest.put("firstNameFlag",FALSE);
                     }
-                    if (Objects.equals(request.getUpdatedLastName(), student.getSurname())){
-                        formattedRequest.put("lastNameFlag",TRUE);
-                    }
                     else {
+                        formattedRequest.put("firstNameFlag",TRUE);
+                    }
+                    if (Objects.equals(request.getUpdatedLastName(), student.getSurname())){
                         formattedRequest.put("lastNameFlag",FALSE);
                     }
+                    else {
+                        formattedRequest.put("lastNameFlag",TRUE);
+                    }
                     if (request.getUpdatedDOB() == student.getDateOfBirth()){
-                        formattedRequest.put("dobFlag",TRUE);
+                        formattedRequest.put("dobFlag",FALSE);
                     }
                     else {
-                        formattedRequest.put("dobFlag",FALSE);
+                        formattedRequest.put("dobFlag",TRUE);
                     }
 
                     List<StudentExamRegistration> registration = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(request.getExamCycle().getId(), request.getStudent().getId());
@@ -440,9 +440,11 @@ public class HallTicketService {
                 studentRepository.save(student);
 
                 // 2. Regenerate the hall ticket with the updated details
-                Optional<StudentExamRegistration> registrationOptional = Optional.ofNullable(studentExamRegistrationRepository.findByStudent(student));
-                if (registrationOptional.isPresent()) {
-                    StudentExamRegistration registration = registrationOptional.get();
+//                Optional<StudentExamRegistration> registrationOptional = Optional.ofNullable(studentExamRegistrationRepository.findByStudent(student));
+                List<StudentExamRegistration> registrationOptional = studentExamRegistrationRepository.getByStudentId(student.getId());
+
+                if (!registrationOptional.isEmpty()) {
+                    StudentExamRegistration registration = registrationOptional.get(0);
                     byte[] hallTicketData = generateHallTicket(registration);
                     if (hallTicketData.length > 0) {
                         MultipartFile hallTicket = new ByteArrayMultipartFile(hallTicketData, "hallticket_updated_" + student.getId() + ".pdf");
