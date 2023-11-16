@@ -53,6 +53,8 @@ public class HallTicketService {
     @Autowired
     DataCorrectionRequestRepository dataCorrectionRequestRepository;
     @Autowired
+    CourseRepository courseRepository;
+    @Autowired
     private StudentRepository studentRepository;
     @Autowired
     private ExamCycleRepository examCycleRepository;
@@ -263,6 +265,7 @@ public class HallTicketService {
                                                        String updatedFirstName,
                                                        String updatedLastName,
                                                        LocalDate updatedDOB,
+                                                       String updatedCourseYear,
                                                        @RequestParam("file") MultipartFile proof) throws IOException {
         ResponseDto response = new ResponseDto(Constants.API_HALLTICKET_REQUEST_DATA_CORRECTION);
 
@@ -296,6 +299,9 @@ public class HallTicketService {
             if (updatedDOB != null) {
                 request.setUpdatedDOB(updatedDOB);
             }
+            if (updatedCourseYear != null){
+                request.setUpdatedCourseYear(updatedCourseYear);
+            }
             request.setExamCycle(optionalExamCycle.get());
             request.setStatus("NEW");
 
@@ -320,6 +326,7 @@ public class HallTicketService {
         dto.setUpdatedFirstName(request.getUpdatedFirstName());
         dto.setUpdatedLastName(request.getUpdatedLastName());
         dto.setUpdatedDOB(request.getUpdatedDOB());
+        dto.setUpdatedCourseYear(request.getUpdatedCourseYear());
         dto.setStatus(request.getStatus());
         dto.setProofAttachmentPath(request.getProofAttachmentPath());
         return dto;
@@ -346,13 +353,16 @@ public class HallTicketService {
                 formattedRequest.put("firstName", request.getUpdatedFirstName());
                 formattedRequest.put("lastName", request.getUpdatedLastName());
                 formattedRequest.put("dob", request.getUpdatedDOB());
+                formattedRequest.put("courseYear",request.getUpdatedCourseYear());
 
                 if (request.getStudent() != null) {
                     Student student = request.getStudent();
                     formattedRequest.put("prevFirstName", student.getFirstName());
                     formattedRequest.put("prevLastName", student.getSurname());  // changed from 'surName'
                     formattedRequest.put("prevDob", student.getDateOfBirth());
+                    formattedRequest.put("preCourseYear", student.getCourse().getCourseYear());
                     formattedRequest.put("enrollmentNumber", student.getEnrollmentNumber());
+                    formattedRequest.put("courseName", student.getCourse().getCourseName());
                     if (Objects.equals(request.getUpdatedFirstName(), student.getFirstName())){
                         formattedRequest.put("firstNameFlag",FALSE);
                     }
@@ -370,6 +380,12 @@ public class HallTicketService {
                     }
                     else {
                         formattedRequest.put("dobFlag",TRUE);
+                    }
+                    if (Objects.equals(request.getUpdatedCourseYear(), student.getCourse().getCourseYear())){
+                        formattedRequest.put("courseYearFlag",FALSE);
+                    }
+                    else {
+                        formattedRequest.put("courseYearFlag",TRUE);
                     }
 
                     List<StudentExamRegistration> registration = studentExamRegistrationRepository.getByExamCycleIdAndStudentId(request.getExamCycle().getId(), request.getStudent().getId());
@@ -437,8 +453,10 @@ public class HallTicketService {
                 student.setFirstName(request.getUpdatedFirstName());
                 student.setSurname(request.getUpdatedLastName());
                 student.setDateOfBirth(request.getUpdatedDOB());
+                Course course = request.getStudent().getCourse();
+                course.setCourseYear(request.getUpdatedCourseYear());
                 studentRepository.save(student);
-
+                courseRepository.save(course);
                 // 2. Regenerate the hall ticket with the updated details
 //                Optional<StudentExamRegistration> registrationOptional = Optional.ofNullable(studentExamRegistrationRepository.findByStudent(student));
                 List<StudentExamRegistration> registrationOptional = studentExamRegistrationRepository.getByStudentId(student.getId());

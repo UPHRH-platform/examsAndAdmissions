@@ -15,6 +15,7 @@ public class DataCorrectionRequestDto {
     private String updatedFirstName;
     private String updatedLastName;
     private LocalDate updatedDOB;
+    private String updatedCourseYear;
     private String status;
     private String proofAttachmentPath;
 }

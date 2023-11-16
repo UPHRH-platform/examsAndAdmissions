@@ -90,14 +90,16 @@ public class HallTicketController {
             @RequestParam(value = "updatedFirstName", required = false) Optional<String> updatedFirstNameOpt,
             @RequestParam(value = "updatedLastName", required = false) Optional<String> updatedLastNameOpt,
             @RequestParam(value = "updatedDOB", required = false) Optional<String> dobOpt, // Taking as string for optional handling
+            @RequestParam(value = "updatedCourseYear",required = false) Optional<String> courseYear,
             @RequestParam("proof") MultipartFile proof) throws IOException {
 
         // Convert Optional<String> to actual value or null if not present
         String updatedFirstName = updatedFirstNameOpt.orElse(null);
         String updatedLastName = updatedLastNameOpt.orElse(null);
         LocalDate updatedDOB = dobOpt.isPresent() ? LocalDate.parse(dobOpt.get()) : null;
+        String updatedCourseYear = courseYear.orElse(null);
 
-        ResponseDto responseDto = hallTicketService.requestHallTicketDataCorrection(studentId,examCycleId, updatedFirstName, updatedLastName, updatedDOB, proof);
+        ResponseDto responseDto = hallTicketService.requestHallTicketDataCorrection(studentId,examCycleId, updatedFirstName, updatedLastName, updatedDOB,updatedCourseYear, proof);
         return ResponseEntity.status(responseDto.getResponseCode().value()).body(responseDto);
     }
 

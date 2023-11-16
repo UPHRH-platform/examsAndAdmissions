@@ -36,6 +36,6 @@ public class DataCorrectionRequest {
     private String updatedFirstName;
     private String updatedLastName;
     private LocalDate updatedDOB;
-
+    private String updatedCourseYear;
 
 }
