@@ -26,9 +26,15 @@ public class RequestInterceptor extends BaseController implements HandlerInterce
 	@Value("${user.management.exam.fee.auth.token}")
 	private String userManagementAuthToken;
 
+	@Value("${request.interceptor.enabled}")
+	private String isInterceptorEnabled;
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		if("true".equalsIgnoreCase(isInterceptorEnabled)) {
+			return Boolean.TRUE;
+		}
 		if(request.getRequestURI().endsWith("login")) {
 			return Boolean.TRUE;
 		}
