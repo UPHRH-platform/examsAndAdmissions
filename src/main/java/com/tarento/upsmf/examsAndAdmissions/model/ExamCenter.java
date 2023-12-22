@@ -1,5 +1,6 @@
 package com.tarento.upsmf.examsAndAdmissions.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tarento.upsmf.examsAndAdmissions.enums.ApprovalStatus;
 import lombok.*;
 
@@ -43,6 +44,16 @@ public class ExamCenter {
     private Boolean alternateExamCenterAssigned = false;
     @OneToOne
     @JoinColumn(name = "alternate_exam_center_id")
+//    @JsonIgnore // Ignore this field during JSON serialization
     private ExamCenter alternateExamCenter;
 
+    @Override
+    public String toString() {
+        return "ExamCenter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                // ... (other fields)
+                ", alternateExamCenter=" + (alternateExamCenter != null ? alternateExamCenter.getId() : null) + // Handle alternateExamCenter to break the cyclic reference
+                '}';
+    }
 }
