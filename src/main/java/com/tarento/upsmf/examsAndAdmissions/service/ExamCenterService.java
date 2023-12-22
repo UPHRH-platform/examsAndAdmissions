@@ -78,13 +78,13 @@ public class ExamCenterService {
                 // Set the alternate exam center for the unverified exam center
                 unverifiedExamCenter.setAlternateExamCenter(alternateExamCenter);
                 unverifiedExamCenter.setAlternateExamCenterAssigned(true);
-                examCenterRepository.save(unverifiedExamCenter);
+                unverifiedExamCenter = examCenterRepository.save(unverifiedExamCenter);
 
                 // Save the updated registrations
                 List<StudentExamRegistration> updatedRegistrations = studentExamRegistrationRepository.saveAll(affectedRegistrations);
 
                 response.put("message", "Alternate Exam Center assigned successfully.");
-                response.put(Constants.RESPONSE, updatedRegistrations);
+                response.put(Constants.RESPONSE, unverifiedExamCenter);
                 response.setResponseCode(HttpStatus.OK);
             }
         } catch (EntityNotFoundException e) {
