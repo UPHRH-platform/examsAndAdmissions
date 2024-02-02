@@ -37,10 +37,11 @@ public class StudentController {
     public ResponseEntity<ResponseDto> getFilteredStudents(
             @RequestParam(required = false) Long instituteId,
             @RequestParam(required = false) Long courseId,
-            @RequestParam(required = false) String session,
-            @RequestParam(required = false) VerificationStatus verificationStatus) {
+            @RequestParam(required = false) String academicYear,
+            @RequestParam(required = false) VerificationStatus verificationStatus,
+        @RequestParam(required = false) Long examCycleId) {
 
-        ResponseDto response = studentService.getFilteredStudents(instituteId, courseId, session, verificationStatus);
+        ResponseDto response = studentService.getFilteredStudents(instituteId, courseId, academicYear, verificationStatus, examCycleId);
 //        return ResponseEntity.status(response.getResponseCode()).body(response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
