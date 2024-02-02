@@ -189,10 +189,12 @@ public class StudentService {
     }
 
     private String generateProvisionalNumber(Student student) {
-        return student.getCourse().getCourseCode() + "-" + UUID.randomUUID().toString();
+        int hashCode = Math.abs(student.getMobileNo().hashCode());
+        int truncatedHashCode = hashCode % 100000000;
+        return String.valueOf(truncatedHashCode);
     }
 
-    public ResponseDto getFilteredStudents(Long instituteId, Long courseId, String session, VerificationStatus verificationStatus) {
+    public ResponseDto getFilteredStudents(Long instituteId, Long courseId, String session, VerificationStatus verificationStatus, Long examCycleId) {
         ResponseDto response = new ResponseDto(Constants.API_GET_FILTERED_STUDENTS);
 
         try {
@@ -215,6 +217,9 @@ public class StudentService {
             }
             if (verificationStatus != null) {
                 predicates.add(criteriaBuilder.equal(studentRoot.get("verificationStatus"), verificationStatus));
+            }
+            if (examCycleId != null){
+                predicates.add(criteriaBuilder.equal(studentRoot.get("exam"),examCycleId));
             }
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
