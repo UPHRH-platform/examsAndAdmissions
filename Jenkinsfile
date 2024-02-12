@@ -5,7 +5,7 @@ pipeline {
         GCR_REGISTRY = "asia.gcr.io/upsmf-368011" 
         IMAGE_NAME = "examsandadmissions-be-uat"
         BRANCH_NAME = "main" 
-	      IMAGE_TAG = "1.0"   
+	IMAGE_TAG = "1.0"   
     }
 
     stages {
@@ -24,15 +24,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-		                def dockerTag = "${IMAGE_TAG}-${env.BUILD_NUMBER}"	
-		                def dockerImage = docker.build("${GCR_REGISTRY}/${IMAGE_NAME}:${dockerTag}")	
+		    def dockerTag = "${IMAGE_TAG}-${env.BUILD_NUMBER}"	
+		    def dockerImage = docker.build("${GCR_REGISTRY}/${IMAGE_NAME}:${dockerTag}")	
                 }
             }
         }
         stage('Push to GCR') {
             steps {
                 script {
-		                def dockerTag = "${IMAGE_TAG}-${env.BUILD_NUMBER}"	
+		    def dockerTag = "${IMAGE_TAG}-${env.BUILD_NUMBER}"	
                     sh "docker push ${GCR_REGISTRY}/${IMAGE_NAME}:${dockerTag}"
                 }
             }
